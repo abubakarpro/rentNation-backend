@@ -50,15 +50,22 @@ model Category {
 }
 
 model Product {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  name       String
-  categoryId String   @db.ObjectId
-  category   Category @relation(fields: [categoryId], references: [id])
-  quantity   Int
-  price      Float
-  likes      Like[]
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  description     String?
+  location        Json
+  images          String[]
+  categoryId      String   @db.ObjectId
+  category        Category @relation(fields: [categoryId], references: [id])
+  quantity        Int
+  pricePerDay     Float
+  discountPerWeek Float
+  properties      Json
+  availableFrom   String
+  availableTo     String
+  likes           Like[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model Like {
@@ -70,3 +77,4 @@ model Like {
   user    User    @relation(fields: [userId], references: [id])
   product Product @relation(fields: [productId], references: [id])
 }
+

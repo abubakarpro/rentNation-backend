@@ -21,9 +21,11 @@ const ErrorMessage = 'Category not found';
 export class ProductService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createProductDto: CreateProductDto): Promise<Product> {
+  async create(createProductDto): Promise<Product> {
     try {
-      const { name, categoryId, quantity, price } = createProductDto;
+      const { 
+        name, categoryId, quantity, pricePerDay, description, 
+        properties, location, discountPerWeek, availableFrom, availableTo, images } = createProductDto;
       const categoryExists = await this.prisma.category.findUnique({
         where: {
           id: categoryId,
@@ -36,12 +38,18 @@ export class ProductService {
       if (!categoryExists) {
         throw new Error(ErrorMessage);
       }
-
       const product = await this.prisma.product.create({
         data: {
           name: name,
           quantity: quantity,
-          price: price,
+          pricePerDay: pricePerDay,
+          description: description,
+          properties: properties,
+          location: location,
+          availableFrom: availableFrom,
+          availableTo: availableTo,
+          discountPerWeek: discountPerWeek,
+          images:images,
           category: {
             connect: {
               id: categoryId,
@@ -108,7 +116,7 @@ export class ProductService {
 
   async update(
     id: string,
-    updateProductDto: CreateProductDto,
+    updateProductDto,
   ): Promise<Product> {
     try {
       const categoryExists = await this.prisma.category.findUnique({

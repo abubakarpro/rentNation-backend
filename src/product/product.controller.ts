@@ -36,4 +36,29 @@ export class ProductController {
   remove(@Param('id') id: string) {
     return this.productService.remove(id);
   }
+
+  // @Post(':userId/likes/:productId')
+  // async likeProduct(
+  //   @Param('userId') userId: number,
+  //   @Param('productId') productId: number,
+  // ) {
+  //   await this.prisma.like.create({
+  //     data: {
+  //       userId,
+  //       productId,
+  //     },
+  //   });
+
+  //   return { message: 'Product liked successfully.' };
+  // }
+
+  // @Get(':userId/likes')
+  // async getUserLikedProducts(@Param('userId') userId: number) {
+  //   const user = await this.prisma.user.findUnique({
+  //     where: { id: userId },
+  //     include: { likes: { include: { product: true } } },
+  //   });
+
+  //   return user?.likes.map((like) => like.product);
+  // }
 }

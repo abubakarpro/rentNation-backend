@@ -1,11 +1,41 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, IsEnum } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+
+
+export class locationDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  lat: number
+
+  @ApiProperty()
+  @IsNotEmpty()
+  lng: number
+}
 
 export class CreateProductDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
   name: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  availableFrom: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  availableTo: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  description: string;
+
+  @ApiProperty()
+  @IsArray()
+  images: string[];
 
   @ApiProperty()
   @IsNotEmpty()
@@ -16,7 +46,21 @@ export class CreateProductDto {
   quantity: number;
 
   @ApiProperty()
+  @IsNotEmpty()
+  pricePerDay: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  discountPerWeek: number;
+
+  @ApiProperty()
   @IsOptional()
-  price: number;
+  properties: JSON;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  location: locationDto
 
 }
+
+
