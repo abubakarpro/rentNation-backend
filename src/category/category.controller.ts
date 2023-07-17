@@ -13,7 +13,6 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   //Validate User based on Role
-  @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.ADMIN))
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.create(createCategoryDto);

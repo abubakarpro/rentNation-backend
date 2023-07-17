@@ -300,6 +300,7 @@ export class UsersService {
     }
   }
 
+
   async handleCreateSubAdmin(userCreateReq: CreateUserDTO): Promise<IUserResponse> {
     try {
       const salt = await bcrypt.genSalt();
