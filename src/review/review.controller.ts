@@ -1,0 +1,33 @@
+import { Controller, Get, Post, Body, Put, Param, Delete, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiParam, ApiProperty, ApiTags } from '@nestjs/swagger';
+
+import { CreateProductReviewDto } from './dto/review-product.dto';
+import { ReviewService } from './review.service';
+
+@Controller('product/review')
+@ApiTags('Reviews Module')
+export class ReviewController {
+  constructor(private readonly reviewService: ReviewService) {}
+
+  @Post()
+  createReview(@Body() createProductReviewDto: CreateProductReviewDto) {
+    return this.reviewService.createReview(createProductReviewDto);
+  }
+
+  @Get('getByUser/:id')
+  @ApiParam({ name: 'id' })
+  getReviewsByUser(@Param('id') userId: string) {
+    return this.reviewService.getReviewsByUser(userId);
+  }
+
+  @Get('getByProduct/:id')
+  @ApiParam({ name: 'id' })
+  getReviewsByProduct(@Param('id') productId: string) {
+    return this.reviewService.getProductAllReview(productId);
+  }
+
+  
+
+
+
+}

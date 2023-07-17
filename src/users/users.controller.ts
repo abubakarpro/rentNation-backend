@@ -47,7 +47,7 @@ export class UsersController {
     return this.usersService.handleFacebookUserLogin(loginFacebookUserReq)
   }
 
-  
+
   @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.USER))
   @Post("createSubAdmin")
   handleCreateSubAdmin(@Body() userData: CreateUserDTO): Promise<IUserResponse> {

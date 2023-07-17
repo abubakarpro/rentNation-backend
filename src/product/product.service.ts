@@ -17,7 +17,8 @@ const BadRequestExceptionNotFoundErrorMessageForDelete =
   'Record to delete does not exist';
 const BadRequestExceptionNotFoundErrorMessage = 'Entity with ID not found';
 const ErrorMessage = 'Category not found';
-const ConflictExceptionProductErrorMessage = "This Product is already Liked."
+const ConflictExceptionProductErrorMessage = 'This Product is already Liked.';
+
 
 @Injectable()
 export class ProductService {
@@ -202,6 +203,7 @@ export class ProductService {
         where,
         include: {
           category: true,
+          likes: true,
         },
       });
 
@@ -242,7 +244,6 @@ export class ProductService {
   }
 
   async getProductsByUserLikes(userId: string): Promise<Product[]> {
-    console.log("userId")
     const products = await this.prisma.product.findMany({
       where: {
         likes: {
@@ -253,8 +254,45 @@ export class ProductService {
       },
     });
 
-    
-
     return products;
+  }
+
+  async updateViewCounter(productId: string, counterBody): Promise<Product> {
+    const { viewCounter } = counterBody;
+    try {
+      const updatedProduct = await this.prisma.product.update({
+        where: {
+          id: productId,
+        },
+        data: {
+          viewCounter: viewCounter,
+        },
+      });
+
+      return updatedProduct;
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new BadRequestException(
+          BadRequestExceptionNotFoundErrorMessageForUpdate,
+        );
+      }
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async searchProductsByPlaceId(placeId: string): Promise<any> {
+    try{
+      const products = await this.prisma.product.findMany({
+        where: {
+          location: {
+            placeId: placeId,
+          },
+        },
+      });
+      return products;
+    }catch(error){
+      throw new BadRequestException(error.message);
+    }
+    
   }
 }

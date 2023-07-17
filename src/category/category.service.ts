@@ -96,12 +96,12 @@ export class CategoryService {
 
   async remove(id: string) {
      try {
-      const deleteCustomer = await this.prisma.user.delete({
+      const deleteCategory = await this.prisma.category.delete({
         where: {
           id: id,
         },
       });
-      return deleteCustomer;
+      return deleteCategory;
     } catch (error) {
       if (error.code === 'P2025') {
         throw new BadRequestException(

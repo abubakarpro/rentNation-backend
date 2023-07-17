@@ -10,6 +10,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+type Location {
+  placeId String?
+  name    String?
+  city    String?
+}
+
 enum Role {
   USER
   ADMIN
@@ -35,6 +41,7 @@ model User {
   password     String
   role         Role
   likes        Like[]
+  review       Review[]
   googleUser   Boolean  @default(false)
   facebookUser Boolean  @default(false)
   createdAt    DateTime @default(now())
@@ -53,17 +60,19 @@ model Product {
   id              String   @id @default(auto()) @map("_id") @db.ObjectId
   name            String
   description     String?
-  location        Json
+  location        Location
   images          String[]
   categoryId      String   @db.ObjectId
-  category        Category @relation(fields: [categoryId], references: [id])
+  category        Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   quantity        Int
   pricePerDay     Float
   discountPerWeek Float
   properties      Json
   availableFrom   String
   availableTo     String
+  viewCounter     Int?     @default(0)
   likes           Like[]
+  review          Review[]
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
@@ -74,7 +83,20 @@ model Like {
   productId String   @db.ObjectId
   createdAt DateTime @default(now())
 
-  user    User    @relation(fields: [userId], references: [id])
-  product Product @relation(fields: [productId], references: [id])
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Review {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  stars          Int
+  reviewComments String
+  userId         String   @db.ObjectId
+  productId      String   @db.ObjectId
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product        Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 

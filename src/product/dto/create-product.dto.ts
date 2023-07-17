@@ -5,11 +5,16 @@ import { ApiProperty } from '@nestjs/swagger';
 export class locationDto {
   @ApiProperty()
   @IsNotEmpty()
-  lat: number
+  placeId: string
 
   @ApiProperty()
   @IsNotEmpty()
-  lng: number
+  name: string
+
+  @ApiProperty()
+  @IsNotEmpty()
+  city: string
+
 }
 
 export class CreateProductDto {

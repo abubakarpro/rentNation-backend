@@ -9,6 +9,7 @@ import { UsersModule } from 'src/users/users.module';
 @Module({
   imports:[PrismaModule, UsersModule],
   controllers: [ProductController],
-  providers: [ProductService]
+  providers: [ProductService],
+  exports: [ ProductService],
 })
 export class ProductModule {}

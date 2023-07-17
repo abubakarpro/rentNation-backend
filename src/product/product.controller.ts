@@ -3,15 +3,21 @@ import { ApiBearerAuth, ApiParam, ApiProperty, ApiTags } from '@nestjs/swagger';
 
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductView } from './dto/update-product-view.dto';
 
 @Controller('product')
 @ApiTags('Product Module')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
+  @Get('searchingOnLocation')
+  // @ApiParam({ name: 'id' })
+  searchingOnLocation() {
+    return this.productService.searchProductsByPlaceId("ChIJb7iwgl8BGTkR5gI96_35yi8");
+  }
+
   @Get('getByCategory/:id')
   @ApiParam({ name: 'id' })
-  
   productsFilteredByCategory(
     @Param('id') id: string,
     @Query('fromDate') fromDate: string,
@@ -60,6 +66,12 @@ export class ProductController {
   @Get(':userId/likes')
   async getUserLikedProducts(@Param('userId') userId: string) {
     return this.productService.getProductsByUserLikes(userId);
+  }
+
+  @Put('updateView/:id')
+  @ApiParam({ name: 'id' })
+  updateViewCounter(@Param('id') productId: string, @Body() counterBody: UpdateProductView) {
+    return this.productService.updateViewCounter(productId, counterBody);
   }
 
 }
