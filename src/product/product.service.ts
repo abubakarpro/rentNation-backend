@@ -3,29 +3,44 @@ import {
   ConflictException,
   BadRequestException,
 } from '@nestjs/common';
-import { Product, Prisma } from '@prisma/client';
+import { Product, Prisma, Like } from '@prisma/client';
 
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
+import { UsersService } from 'src/users/users.service';
 
 const ConflictExceptionErrorMessage = 'Product already exist';
-const BadRequestExceptionInvalid = 'Invalid request';
+const BadRequestExceptionInvalid = 'Invalid ID';
 const BadRequestExceptionNotFoundErrorMessageForUpdate =
   'Record to update does not exist';
 const BadRequestExceptionNotFoundErrorMessageForDelete =
   'Record to delete does not exist';
 const BadRequestExceptionNotFoundErrorMessage = 'Entity with ID not found';
 const ErrorMessage = 'Category not found';
+const ConflictExceptionProductErrorMessage = "This Product is already Liked."
 
 @Injectable()
 export class ProductService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly userService: UsersService,
+  ) {}
 
   async create(createProductDto): Promise<Product> {
     try {
-      const { 
-        name, categoryId, quantity, pricePerDay, description, 
-        properties, location, discountPerWeek, availableFrom, availableTo, images } = createProductDto;
+      const {
+        name,
+        categoryId,
+        quantity,
+        pricePerDay,
+        description,
+        properties,
+        location,
+        discountPerWeek,
+        availableFrom,
+        availableTo,
+        images,
+      } = createProductDto;
       const categoryExists = await this.prisma.category.findUnique({
         where: {
           id: categoryId,
@@ -49,7 +64,7 @@ export class ProductService {
           availableFrom: availableFrom,
           availableTo: availableTo,
           discountPerWeek: discountPerWeek,
-          images:images,
+          images: images,
           category: {
             connect: {
               id: categoryId,
@@ -114,10 +129,7 @@ export class ProductService {
     }
   }
 
-  async update(
-    id: string,
-    updateProductDto,
-  ): Promise<Product> {
+  async update(id: string, updateProductDto): Promise<Product> {
     try {
       const categoryExists = await this.prisma.category.findUnique({
         where: {
@@ -167,5 +179,82 @@ export class ProductService {
       }
       throw new BadRequestException(error.message);
     }
+  }
+
+  async productsFilteredByCategory(
+    id: string,
+    fromDate: string,
+    toDate: string,
+  ): Promise<Product[]> {
+    try {
+      const where = {
+        categoryId: id,
+      };
+
+      if (fromDate && toDate) {
+        Object.assign(where, {
+          availableFrom: { lte: fromDate },
+          availableTo: { gte: toDate },
+        });
+      }
+
+      const product = await this.prisma.product.findMany({
+        where,
+        include: {
+          category: true,
+        },
+      });
+
+      if (product) return product;
+      throw new BadRequestException(BadRequestExceptionNotFoundErrorMessage);
+    } catch (error) {
+      if (error.code === 'P2023') {
+        throw new BadRequestException(BadRequestExceptionInvalid);
+      }
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async likeProduct(userId: string, productId: string): Promise<Like> {
+    try {
+      await this.userService.findOne(userId);
+      await this.findOne(productId);
+      const alreadyExist = await this.prisma.like.findMany({
+        where: {
+          productId: productId,
+        },
+      });
+      if (alreadyExist.length > 0)
+        throw new BadRequestException(ConflictExceptionProductErrorMessage);
+      const likedData = await this.prisma.like.create({
+        data: {
+          userId,
+          productId,
+        },
+      });
+      return likedData;
+    } catch (error) {
+      if (error.code === 'P2023') {
+        throw new BadRequestException(BadRequestExceptionInvalid);
+      }
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async getProductsByUserLikes(userId: string): Promise<Product[]> {
+    console.log("userId")
+    const products = await this.prisma.product.findMany({
+      where: {
+        likes: {
+          some: {
+            userId,
+          },
+        },
+      },
+    });
+
+    
+
+    return products;
   }
 }

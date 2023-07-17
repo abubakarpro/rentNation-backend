@@ -23,7 +23,7 @@ const BadRequestExceptionNotFoundErrorMessageForUpdate =
 const BadRequestExceptionNotFoundErrorMessageForDelete =
   'Record to delete does not exist';
 const ConflictExceptionErrorMessage = 'User already exist';
-const BadRequestExceptionInvalid = 'Invalid request';
+const BadRequestExceptionInvalid = 'Invalid ID';
 const BadRequestExceptionNotFoundErrorMessage = 'Entity with ID not found';
 const BadRequestExceptionPasswordMessage = 'Old password is not correct!';
 const ForbiddenExceptionErrorMessage = "You don't have permission to create account for SUB-ADMIN or ADMIN";

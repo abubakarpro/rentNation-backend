@@ -8,7 +8,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 const ConflictExceptionErrorMessage = 'Category already exist';
 const BadRequestExceptionNotFoundErrorMessageForUpdate =
   'Record to update does not exist';
-const BadRequestExceptionInvalid = "Invalid request";
+const BadRequestExceptionInvalid = "Invalid ID";
 const BadRequestExceptionNotFoundErrorMessageForDelete =
   'Record to delete does not exist';
 const BadRequestExceptionNotFoundErrorMessage =
