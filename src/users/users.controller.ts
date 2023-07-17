@@ -6,9 +6,11 @@ import {
   Body,
   Param,
   Delete,
+  UseGuards
 } from '@nestjs/common';
 import { User as UserModel } from '@prisma/client';
 import { ApiBearerAuth, ApiParam, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 import { UsersService } from './users.service';
 import { LoginUserDTO } from './dto/login-user.dto';
@@ -16,6 +18,8 @@ import { CreateUserDTO } from './dto/create-user.dto';
 import { ResetPasswordUserDTO } from './dto/resetPassword.dto';
 import { IUserResponse } from './dto/interface-user';
 import { OAuthUserDTO } from './dto/OAuthUserDTO.dto';
+import { RolesGuard } from 'src/users/auth/roles.guard';
+import { Role } from 'src/users/dto/role.enum';
 
 @Controller('users')
 @ApiTags('USER Module')
@@ -36,6 +40,17 @@ export class UsersController {
   @Post('googleLogin')
   handleGoogleLogin(@Body() loginGoogleUserReq: OAuthUserDTO): Promise<IUserResponse> {
     return this.usersService.handleGoogleUserLogin(loginGoogleUserReq)
+  }
+
+  @Post('facebookLogin')
+  handleFacebookLogin(@Body() loginFacebookUserReq: OAuthUserDTO): Promise<IUserResponse> {
+    return this.usersService.handleFacebookUserLogin(loginFacebookUserReq)
+  }
+
+  @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.USER))
+  @Post("createSubAdmin")
+  handleCreateSubAdmin(@Body() userData: CreateUserDTO): Promise<IUserResponse> {
+    return this.usersService.handleCreateSubAdmin(userData);
   }
 
   @Post()

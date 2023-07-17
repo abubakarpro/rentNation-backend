@@ -47,7 +47,6 @@ export class CategoryService {
         skip,
         take,
         cursor,
-        where,
         orderBy,
       });
     } catch (error) {

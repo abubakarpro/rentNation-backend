@@ -3,6 +3,7 @@ import {
   BadRequestException,
   UnauthorizedException,
   ConflictException,
+  ForbiddenException
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
@@ -25,6 +26,8 @@ const ConflictExceptionErrorMessage = 'User already exist';
 const BadRequestExceptionInvalid = 'Invalid request';
 const BadRequestExceptionNotFoundErrorMessage = 'Entity with ID not found';
 const BadRequestExceptionPasswordMessage = 'Old password is not correct!';
+const ForbiddenExceptionErrorMessage = "You don't have permission to create account for SUB-ADMIN or ADMIN";
+
 
 @Injectable()
 export class UsersService {
@@ -73,6 +76,9 @@ export class UsersService {
 
   async create(userCreateReq: CreateUserDTO): Promise<IUserResponse> {
     try {
+      if(userCreateReq.role === "SUB_ADMIN" || userCreateReq.role === "ADMIN") {
+        throw new ForbiddenException(ForbiddenExceptionErrorMessage);
+      }
       const salt = await bcrypt.genSalt();
       const hashedPassword: string = await bcrypt.hash(
         userCreateReq.password,
@@ -252,6 +258,75 @@ export class UsersService {
       }
     } catch (err) {
       throw new BadRequestException(err.message);
+    }
+  }
+
+  //FacebookUser
+  async handleFacebookUserLogin(data: OAuthUserDTO): Promise<IUserResponse> {
+    const { name, email } = data;
+    try {
+      const user = await this.prisma.user.findFirst({
+        where: {
+          email: data.email,
+        },
+      });
+
+      const payload: { email: string } = {
+        email: email,
+      };
+      const accessToken: string = this.jwtService.sign(payload);
+      if (user) {
+        return {
+          user: user,
+          accessToken: accessToken,
+        };
+      } else {
+        const userReg = await this.prisma.user.create({
+          data: {
+            email: data.email,
+            name: data.name,
+            facebookUser: true,
+            password: '',
+            role: 'USER',
+          },
+        });
+        return {
+          user: userReg,
+          accessToken: accessToken,
+        };
+      }
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
+  }
+
+  async handleCreateSubAdmin(userCreateReq: CreateUserDTO): Promise<IUserResponse> {
+    try {
+      const salt = await bcrypt.genSalt();
+      const hashedPassword: string = await bcrypt.hash(
+        userCreateReq.password,
+        salt,
+      );
+
+      const payload = { email: userCreateReq.email };
+      const accessToken: string = this.jwtService.sign(payload);
+
+      const user = await this.prisma.user.create({
+        data: {
+          ...userCreateReq,
+          password: hashedPassword,
+        },
+      });
+
+      return {
+        user: user,
+        accessToken: accessToken,
+      };
+    } catch (error) {
+      if (error.code === 'P2002') {
+        throw new ConflictException(ConflictExceptionErrorMessage);
+      }
+      throw new BadRequestException(error.message);
     }
   }
 }

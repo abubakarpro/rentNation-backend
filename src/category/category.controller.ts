@@ -12,7 +12,8 @@ import { Role } from 'src/users/dto/role.enum';
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
-  @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.USER))
+  //Validate User based on Role
+  @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.ADMIN))
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.create(createCategoryDto);
@@ -29,6 +30,7 @@ export class CategoryController {
     return this.categoryService.findOne(id);
   }
 
+  @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.USER))
   @Put(':id')
   @ApiParam({ name: 'id' })
   update(@Param('id') id: string, @Body() updateCategoryDto: CreateCategoryDto) {
