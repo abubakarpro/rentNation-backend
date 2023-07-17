@@ -236,7 +236,7 @@ export class UsersService {
         email: email,
       };
       const accessToken: string = this.jwtService.sign(payload);
-      if (user) {
+      if (user && user.googleUser) {
         return {
           user: user,
           accessToken: accessToken,
@@ -256,8 +256,11 @@ export class UsersService {
           accessToken: accessToken,
         };
       }
-    } catch (err) {
-      throw new BadRequestException(err.message);
+    } catch (error) {
+      if (error.code === 'P2002') {
+        throw new ConflictException(ConflictExceptionErrorMessage);
+      }
+      throw new BadRequestException(error.message);
     }
   }
 
@@ -275,7 +278,7 @@ export class UsersService {
         email: email,
       };
       const accessToken: string = this.jwtService.sign(payload);
-      if (user) {
+      if (user && user.facebookUser) {
         return {
           user: user,
           accessToken: accessToken,
@@ -295,8 +298,53 @@ export class UsersService {
           accessToken: accessToken,
         };
       }
-    } catch (err) {
-      throw new BadRequestException(err.message);
+    } catch (error) {
+      if (error.code === 'P2002') {
+        throw new ConflictException(ConflictExceptionErrorMessage);
+      }
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  //AppleUser
+  async handleAppleLogin(data: OAuthUserDTO): Promise<IUserResponse> {
+    const { name, email } = data;
+    try {
+      const user = await this.prisma.user.findFirst({
+        where: {
+          email: data.email,
+        },
+      });
+
+      const payload: { email: string } = {
+        email: email,
+      };
+      const accessToken: string = this.jwtService.sign(payload);
+      if (user && user.appleUser) {
+        return {
+          user: user,
+          accessToken: accessToken,
+        };
+      } else {
+        const userReg = await this.prisma.user.create({
+          data: {
+            email: data.email,
+            name: data.name,
+            appleUser: true,
+            password: '',
+            role: 'USER',
+          },
+        });
+        return {
+          user: userReg,
+          accessToken: accessToken,
+        };
+      }
+    } catch (error) {
+      if (error.code === 'P2002') {
+        throw new ConflictException(ConflictExceptionErrorMessage);
+      }
+      throw new BadRequestException(error.message);
     }
   }
 

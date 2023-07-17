@@ -44,6 +44,7 @@ model User {
   review       Review[]
   googleUser   Boolean  @default(false)
   facebookUser Boolean  @default(false)
+  appleUser    Boolean  @default(false)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }

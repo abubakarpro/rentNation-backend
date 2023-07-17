@@ -13,7 +13,7 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   //Validate User based on Role
-
+  @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.ADMIN))
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.create(createCategoryDto);
@@ -30,13 +30,14 @@ export class CategoryController {
     return this.categoryService.findOne(id);
   }
 
-  @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.USER))
+  @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.ADMIN))
   @Put(':id')
   @ApiParam({ name: 'id' })
   update(@Param('id') id: string, @Body() updateCategoryDto: CreateCategoryDto) {
     return this.categoryService.update(id, updateCategoryDto);
   }
 
+  @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.ADMIN))
   @Delete(':id')
   @ApiParam({ name: 'id' })
   remove(@Param('id') id: string) {

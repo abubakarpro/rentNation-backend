@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  ConflictException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, ConflictException, BadRequestException } from '@nestjs/common';
 import { Product, Prisma, Like } from '@prisma/client';
 
 import { PrismaService } from '../prisma/prisma.service';
@@ -11,10 +7,8 @@ import { UsersService } from 'src/users/users.service';
 
 const ConflictExceptionErrorMessage = 'Product already exist';
 const BadRequestExceptionInvalid = 'Invalid ID';
-const BadRequestExceptionNotFoundErrorMessageForUpdate =
-  'Record to update does not exist';
-const BadRequestExceptionNotFoundErrorMessageForDelete =
-  'Record to delete does not exist';
+const BadRequestExceptionNotFoundErrorMessageForUpdate = 'Record to update does not exist';
+const BadRequestExceptionNotFoundErrorMessageForDelete = 'Record to delete does not exist';
 const BadRequestExceptionNotFoundErrorMessage = 'Entity with ID not found';
 const ErrorMessage = 'Category not found';
 const ConflictExceptionProductErrorMessage = 'This Product is already Liked.';
@@ -22,10 +16,7 @@ const ConflictExceptionProductErrorMessage = 'This Product is already Liked.';
 
 @Injectable()
 export class ProductService {
-  constructor(
-    private prisma: PrismaService,
-    private readonly userService: UsersService,
-  ) {}
+  constructor(private prisma: PrismaService, private readonly userService: UsersService) {}
 
   async create(createProductDto): Promise<Product> {
     try {
@@ -156,9 +147,7 @@ export class ProductService {
       return updatedProduct;
     } catch (error) {
       if (error.code === 'P2025') {
-        throw new BadRequestException(
-          BadRequestExceptionNotFoundErrorMessageForUpdate,
-        );
+        throw new BadRequestException(BadRequestExceptionNotFoundErrorMessageForUpdate);
       }
       throw new BadRequestException(error.message);
     }
@@ -174,19 +163,13 @@ export class ProductService {
       return deleteProduct;
     } catch (error) {
       if (error.code === 'P2025') {
-        throw new BadRequestException(
-          BadRequestExceptionNotFoundErrorMessageForDelete,
-        );
+        throw new BadRequestException(BadRequestExceptionNotFoundErrorMessageForDelete);
       }
       throw new BadRequestException(error.message);
     }
   }
 
-  async productsFilteredByCategory(
-    id: string,
-    fromDate: string,
-    toDate: string,
-  ): Promise<Product[]> {
+  async productsFilteredByCategory(id: string, fromDate: string, toDate: string): Promise<Product[]> {
     try {
       const where = {
         categoryId: id,
@@ -226,8 +209,7 @@ export class ProductService {
           productId: productId,
         },
       });
-      if (alreadyExist.length > 0)
-        throw new BadRequestException(ConflictExceptionProductErrorMessage);
+      if (alreadyExist.length > 0) throw new BadRequestException(ConflictExceptionProductErrorMessage);
       const likedData = await this.prisma.like.create({
         data: {
           userId,
@@ -272,16 +254,14 @@ export class ProductService {
       return updatedProduct;
     } catch (error) {
       if (error.code === 'P2025') {
-        throw new BadRequestException(
-          BadRequestExceptionNotFoundErrorMessageForUpdate,
-        );
+        throw new BadRequestException(BadRequestExceptionNotFoundErrorMessageForUpdate);
       }
       throw new BadRequestException(error.message);
     }
   }
 
-  async searchProductsByPlaceId(placeId: string): Promise<any> {
-    try{
+  async searchProductsByPlaceId(placeId: string): Promise<Product[]> {
+    try {
       const products = await this.prisma.product.findMany({
         where: {
           location: {
@@ -289,10 +269,10 @@ export class ProductService {
           },
         },
       });
-      return products;
-    }catch(error){
+      const filteredProducts = products.filter((pro) => pro.location.placeId === placeId);
+      return filteredProducts;
+    } catch (error) {
       throw new BadRequestException(error.message);
     }
-    
   }
 }

@@ -10,10 +10,10 @@ import { UpdateProductView } from './dto/update-product-view.dto';
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @Get('searchingOnLocation')
-  // @ApiParam({ name: 'id' })
-  searchingOnLocation() {
-    return this.productService.searchProductsByPlaceId("ChIJb7iwgl8BGTkR5gI96_35yi8");
+  @Get('searchingOnLocation/:id')
+  @ApiParam({ name: 'id' })
+  searchingOnLocation(@Param('id') placeId: string,) {
+    return this.productService.searchProductsByPlaceId(placeId);
   }
 
   @Get('getByCategory/:id')
@@ -73,5 +73,5 @@ export class ProductController {
   updateViewCounter(@Param('id') productId: string, @Body() counterBody: UpdateProductView) {
     return this.productService.updateViewCounter(productId, counterBody);
   }
-
+ 
 }

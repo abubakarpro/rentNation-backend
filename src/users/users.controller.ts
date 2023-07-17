@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Put,
-  Body,
-  Param,
-  Delete,
-  UseGuards
-} from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, Delete, UseGuards } from '@nestjs/common';
 import { User as UserModel } from '@prisma/client';
 import { ApiBearerAuth, ApiParam, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
@@ -34,22 +25,26 @@ export class UsersController {
   @Post('resetPassword/:id')
   @ApiParam({ name: 'id' })
   handleResetPassword(@Param('id') id: string, @Body() resetPasswordReq: ResetPasswordUserDTO): Promise<IUserResponse> {
-    return this.usersService.handleResetPassword(id,resetPasswordReq);
+    return this.usersService.handleResetPassword(id, resetPasswordReq);
   }
 
   @Post('googleLogin')
   handleGoogleLogin(@Body() loginGoogleUserReq: OAuthUserDTO): Promise<IUserResponse> {
-    return this.usersService.handleGoogleUserLogin(loginGoogleUserReq)
+    return this.usersService.handleGoogleUserLogin(loginGoogleUserReq);
   }
 
   @Post('facebookLogin')
   handleFacebookLogin(@Body() loginFacebookUserReq: OAuthUserDTO): Promise<IUserResponse> {
-    return this.usersService.handleFacebookUserLogin(loginFacebookUserReq)
+    return this.usersService.handleFacebookUserLogin(loginFacebookUserReq);
   }
 
+  @Post('appleLogin')
+  handleAppleLogin(@Body() loginAppleUserReq: OAuthUserDTO): Promise<IUserResponse> {
+    return this.usersService.handleAppleLogin(loginAppleUserReq);
+  }
 
-  @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.USER))
-  @Post("createSubAdmin")
+  @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.ADMIN))
+  @Post('createSubAdmin')
   handleCreateSubAdmin(@Body() userData: CreateUserDTO): Promise<IUserResponse> {
     return this.usersService.handleCreateSubAdmin(userData);
   }
@@ -70,6 +65,7 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
+  @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.ADMIN))
   @Put(':id')
   @ApiParam({ name: 'id' })
   update(@Param('id') id: string, @Body() updatedUserData: CreateUserDTO) {
