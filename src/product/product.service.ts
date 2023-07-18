@@ -2,17 +2,8 @@ import { Injectable, ConflictException, BadRequestException } from '@nestjs/comm
 import { Product, Prisma, Like } from '@prisma/client';
 
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateProductDto } from './dto/create-product.dto';
 import { UsersService } from 'src/users/users.service';
-
-const ConflictExceptionErrorMessage = 'Product already exist';
-const BadRequestExceptionInvalid = 'Invalid ID';
-const BadRequestExceptionNotFoundErrorMessageForUpdate = 'Record to update does not exist';
-const BadRequestExceptionNotFoundErrorMessageForDelete = 'Record to delete does not exist';
-const BadRequestExceptionNotFoundErrorMessage = 'Entity with ID not found';
-const ErrorMessage = 'Category not found';
-const ConflictExceptionProductErrorMessage = 'This Product is already Liked.';
-
+import { ProductModuleMessages } from 'src/utils/appMessges';
 
 @Injectable()
 export class ProductService {
@@ -43,7 +34,7 @@ export class ProductService {
       });
 
       if (!categoryExists) {
-        throw new Error(ErrorMessage);
+        throw new Error(ProductModuleMessages.ErrorMessage);
       }
       const product = await this.prisma.product.create({
         data: {
@@ -70,7 +61,7 @@ export class ProductService {
       return product;
     } catch (error) {
       if (error.code === 'P2002') {
-        throw new ConflictException(ConflictExceptionErrorMessage);
+        throw new ConflictException(ProductModuleMessages.ConflictExceptionErrorMessage);
       }
       throw new BadRequestException(error.message);
     }
@@ -112,10 +103,10 @@ export class ProductService {
       });
 
       if (product) return product;
-      throw new BadRequestException(BadRequestExceptionNotFoundErrorMessage);
+      throw new BadRequestException(ProductModuleMessages.BadRequestExceptionNotFoundErrorMessage);
     } catch (error) {
       if (error.code === 'P2023') {
-        throw new BadRequestException(BadRequestExceptionInvalid);
+        throw new BadRequestException(ProductModuleMessages.BadRequestExceptionInvalid);
       }
       throw new BadRequestException(error.message);
     }
@@ -133,7 +124,7 @@ export class ProductService {
       });
 
       if (!categoryExists) {
-        throw new Error(ErrorMessage);
+        throw new Error(ProductModuleMessages.ErrorMessage);
       }
 
       const updatedProduct = await this.prisma.product.update({
@@ -147,7 +138,7 @@ export class ProductService {
       return updatedProduct;
     } catch (error) {
       if (error.code === 'P2025') {
-        throw new BadRequestException(BadRequestExceptionNotFoundErrorMessageForUpdate);
+        throw new BadRequestException(ProductModuleMessages.BadRequestExceptionNotFoundErrorMessageForUpdate);
       }
       throw new BadRequestException(error.message);
     }
@@ -163,7 +154,7 @@ export class ProductService {
       return deleteProduct;
     } catch (error) {
       if (error.code === 'P2025') {
-        throw new BadRequestException(BadRequestExceptionNotFoundErrorMessageForDelete);
+        throw new BadRequestException(ProductModuleMessages.BadRequestExceptionNotFoundErrorMessageForDelete);
       }
       throw new BadRequestException(error.message);
     }
@@ -186,15 +177,20 @@ export class ProductService {
         where,
         include: {
           category: true,
-          likes: true,
+          likes: {
+            include: {
+              user: true,
+              product: true,
+            },
+          },
         },
       });
 
       if (product) return product;
-      throw new BadRequestException(BadRequestExceptionNotFoundErrorMessage);
+      throw new BadRequestException(ProductModuleMessages.BadRequestExceptionNotFoundErrorMessage);
     } catch (error) {
       if (error.code === 'P2023') {
-        throw new BadRequestException(BadRequestExceptionInvalid);
+        throw new BadRequestException(ProductModuleMessages.BadRequestExceptionInvalid);
       }
       throw new BadRequestException(error.message);
     }
@@ -209,7 +205,8 @@ export class ProductService {
           productId: productId,
         },
       });
-      if (alreadyExist.length > 0) throw new BadRequestException(ConflictExceptionProductErrorMessage);
+      if (alreadyExist.length > 0)
+        throw new BadRequestException(ProductModuleMessages.ConflictExceptionProductErrorMessage);
       const likedData = await this.prisma.like.create({
         data: {
           userId,
@@ -219,7 +216,7 @@ export class ProductService {
       return likedData;
     } catch (error) {
       if (error.code === 'P2023') {
-        throw new BadRequestException(BadRequestExceptionInvalid);
+        throw new BadRequestException(ProductModuleMessages.BadRequestExceptionInvalid);
       }
       throw new BadRequestException(error.message);
     }
@@ -254,21 +251,15 @@ export class ProductService {
       return updatedProduct;
     } catch (error) {
       if (error.code === 'P2025') {
-        throw new BadRequestException(BadRequestExceptionNotFoundErrorMessageForUpdate);
+        throw new BadRequestException(ProductModuleMessages.BadRequestExceptionNotFoundErrorMessageForUpdate);
       }
       throw new BadRequestException(error.message);
     }
   }
 
-  async searchProductsByPlaceId(placeId: string): Promise<Product[]> {
+  async searchProductsByLocation(placeId: string): Promise<Product[]> {
     try {
-      const products = await this.prisma.product.findMany({
-        where: {
-          location: {
-            placeId: placeId,
-          },
-        },
-      });
+      const products = await this.prisma.product.findMany({});
       const filteredProducts = products.filter((pro) => pro.location.placeId === placeId);
       return filteredProducts;
     } catch (error) {

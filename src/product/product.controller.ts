@@ -10,10 +10,10 @@ import { UpdateProductView } from './dto/update-product-view.dto';
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @Get('searchingOnLocation/:id')
+  @Get('searchByLocation/:id')
   @ApiParam({ name: 'id' })
-  searchingOnLocation(@Param('id') placeId: string,) {
-    return this.productService.searchProductsByPlaceId(placeId);
+  searchProductsByLocation(@Param('id') placeId: string) {
+    return this.productService.searchProductsByLocation(placeId);
   }
 
   @Get('getByCategory/:id')
@@ -22,7 +22,7 @@ export class ProductController {
     @Param('id') id: string,
     @Query('fromDate') fromDate: string,
     @Query('toDate') toDate: string,
-    ) {
+  ) {
     return this.productService.productsFilteredByCategory(id, fromDate, toDate);
   }
 
@@ -54,12 +54,8 @@ export class ProductController {
     return this.productService.remove(id);
   }
 
-
   @Post(':userId/likes/:productId')
-  async likeProduct(
-    @Param('userId') userId: string,
-    @Param('productId') productId: string,
-  ) {
+  async likeProduct(@Param('userId') userId: string, @Param('productId') productId: string) {
     return this.productService.likeProduct(userId, productId);
   }
 
@@ -73,5 +69,4 @@ export class ProductController {
   updateViewCounter(@Param('id') productId: string, @Body() counterBody: UpdateProductView) {
     return this.productService.updateViewCounter(productId, counterBody);
   }
- 
 }

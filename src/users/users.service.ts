@@ -3,7 +3,7 @@ import {
   BadRequestException,
   UnauthorizedException,
   ConflictException,
-  ForbiddenException
+  ForbiddenException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
@@ -16,18 +16,7 @@ import { LoginUserDTO } from './dto/login-user.dto';
 import { IUserResponse } from './dto/interface-user';
 import { ResetPasswordUserDTO } from './dto/resetPassword.dto';
 import { OAuthUserDTO } from './dto/OAuthUserDTO.dto';
-
-const UnauthorizedExceptionErrorMessage = 'Please check you login credentials';
-const BadRequestExceptionNotFoundErrorMessageForUpdate =
-  'Record to update does not exist';
-const BadRequestExceptionNotFoundErrorMessageForDelete =
-  'Record to delete does not exist';
-const ConflictExceptionErrorMessage = 'User already exist';
-const BadRequestExceptionInvalid = 'Invalid ID';
-const BadRequestExceptionNotFoundErrorMessage = 'Entity with ID not found';
-const BadRequestExceptionPasswordMessage = 'Old password is not correct!';
-const ForbiddenExceptionErrorMessage = "You don't have permission to create account for SUB-ADMIN or ADMIN";
-
+import { UserModuleMessages } from 'src/utils/appMessges';
 
 @Injectable()
 export class UsersService {
@@ -42,7 +31,7 @@ export class UsersService {
     if (user) {
       return user;
     } else {
-      throw new UnauthorizedException(UnauthorizedExceptionErrorMessage);
+      throw new UnauthorizedException(UserModuleMessages.UnauthorizedExceptionErrorMessage);
     }
   }
 
@@ -65,10 +54,10 @@ export class UsersService {
           accessToken: accessToken,
         };
       }
-      throw new UnauthorizedException(UnauthorizedExceptionErrorMessage);
+      throw new UnauthorizedException(UserModuleMessages.UnauthorizedExceptionErrorMessage);
     } catch (error) {
-      if (error.message === UnauthorizedExceptionErrorMessage) {
-        throw new UnauthorizedException(UnauthorizedExceptionErrorMessage);
+      if (error.message === UserModuleMessages.UnauthorizedExceptionErrorMessage) {
+        throw new UnauthorizedException(UserModuleMessages.UnauthorizedExceptionErrorMessage);
       }
       throw new BadRequestException(error.message);
     }
@@ -76,14 +65,11 @@ export class UsersService {
 
   async create(userCreateReq: CreateUserDTO): Promise<IUserResponse> {
     try {
-      if(userCreateReq.role === "SUB_ADMIN" || userCreateReq.role === "ADMIN") {
-        throw new ForbiddenException(ForbiddenExceptionErrorMessage);
+      if (userCreateReq.role === 'SUB_ADMIN' || userCreateReq.role === 'ADMIN') {
+        throw new ForbiddenException(UserModuleMessages.ForbiddenExceptionErrorMessage);
       }
       const salt = await bcrypt.genSalt();
-      const hashedPassword: string = await bcrypt.hash(
-        userCreateReq.password,
-        salt,
-      );
+      const hashedPassword: string = await bcrypt.hash(userCreateReq.password, salt);
 
       const payload = { email: userCreateReq.email };
       const accessToken: string = this.jwtService.sign(payload);
@@ -101,7 +87,7 @@ export class UsersService {
       };
     } catch (error) {
       if (error.code === 'P2002') {
-        throw new ConflictException(ConflictExceptionErrorMessage);
+        throw new ConflictException(UserModuleMessages.ConflictExceptionErrorMessage);
       }
       throw new BadRequestException(error.message);
     }
@@ -136,10 +122,10 @@ export class UsersService {
         },
       });
       if (user) return user;
-      throw new BadRequestException(BadRequestExceptionNotFoundErrorMessage);
+      throw new BadRequestException(UserModuleMessages.BadRequestExceptionNotFoundErrorMessage);
     } catch (error) {
       if (error.code === 'P2023') {
-        throw new BadRequestException(BadRequestExceptionInvalid);
+        throw new BadRequestException(UserModuleMessages.BadRequestExceptionInvalid);
       }
       throw new BadRequestException(error.message);
     }
@@ -162,9 +148,7 @@ export class UsersService {
       return updatedUser;
     } catch (error) {
       if (error.code === 'P2025') {
-        throw new BadRequestException(
-          BadRequestExceptionNotFoundErrorMessageForUpdate,
-        );
+        throw new BadRequestException(UserModuleMessages.BadRequestExceptionNotFoundErrorMessageForUpdate);
       }
       throw new BadRequestException(error.message);
     }
@@ -180,30 +164,19 @@ export class UsersService {
       return deleteCustomer;
     } catch (error) {
       if (error.code === 'P2025') {
-        throw new BadRequestException(
-          BadRequestExceptionNotFoundErrorMessageForDelete,
-        );
+        throw new BadRequestException(UserModuleMessages.BadRequestExceptionNotFoundErrorMessageForDelete);
       }
       throw new BadRequestException(error.message);
     }
   }
 
-  async handleResetPassword(
-    id: string,
-    resetPasswordReq: ResetPasswordUserDTO,
-  ): Promise<any> {
+  async handleResetPassword(id: string, resetPasswordReq: ResetPasswordUserDTO): Promise<any> {
     try {
       const user = await this.findOne(id);
-      if (!user) throw new BadRequestException('User Not exist');
-      if (
-        user &&
-        (await bcrypt.compare(resetPasswordReq.oldPassword, user.password))
-      ) {
+      if (!user) throw new BadRequestException(UserModuleMessages.UserNotExist);
+      if (user && (await bcrypt.compare(resetPasswordReq.oldPassword, user.password))) {
         const salt = await bcrypt.genSalt();
-        const hashedPassword: string = await bcrypt.hash(
-          resetPasswordReq.newPassword,
-          salt,
-        );
+        const hashedPassword: string = await bcrypt.hash(resetPasswordReq.newPassword, salt);
         delete user.id;
         const updatedUser = await this.prisma.user.update({
           where: {
@@ -216,7 +189,7 @@ export class UsersService {
         });
         return updatedUser;
       }
-      throw new BadRequestException(BadRequestExceptionPasswordMessage);
+      throw new BadRequestException(UserModuleMessages.BadRequestExceptionPasswordMessage);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -258,7 +231,7 @@ export class UsersService {
       }
     } catch (error) {
       if (error.code === 'P2002') {
-        throw new ConflictException(ConflictExceptionErrorMessage);
+        throw new ConflictException(UserModuleMessages.ConflictExceptionErrorMessage);
       }
       throw new BadRequestException(error.message);
     }
@@ -300,7 +273,7 @@ export class UsersService {
       }
     } catch (error) {
       if (error.code === 'P2002') {
-        throw new ConflictException(ConflictExceptionErrorMessage);
+        throw new ConflictException(UserModuleMessages.ConflictExceptionErrorMessage);
       }
       throw new BadRequestException(error.message);
     }
@@ -342,20 +315,16 @@ export class UsersService {
       }
     } catch (error) {
       if (error.code === 'P2002') {
-        throw new ConflictException(ConflictExceptionErrorMessage);
+        throw new ConflictException(UserModuleMessages.ConflictExceptionErrorMessage);
       }
       throw new BadRequestException(error.message);
     }
   }
 
-
   async handleCreateSubAdmin(userCreateReq: CreateUserDTO): Promise<IUserResponse> {
     try {
       const salt = await bcrypt.genSalt();
-      const hashedPassword: string = await bcrypt.hash(
-        userCreateReq.password,
-        salt,
-      );
+      const hashedPassword: string = await bcrypt.hash(userCreateReq.password, salt);
 
       const payload = { email: userCreateReq.email };
       const accessToken: string = this.jwtService.sign(payload);
@@ -373,7 +342,7 @@ export class UsersService {
       };
     } catch (error) {
       if (error.code === 'P2002') {
-        throw new ConflictException(ConflictExceptionErrorMessage);
+        throw new ConflictException(UserModuleMessages.ConflictExceptionErrorMessage);
       }
       throw new BadRequestException(error.message);
     }

@@ -1,18 +1,10 @@
-import { Injectable,ConflictException, BadRequestException } from '@nestjs/common';
+import { Injectable, ConflictException, BadRequestException } from '@nestjs/common';
 
 import { Category, Prisma } from '@prisma/client';
 
-import { PrismaService} from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
-
-const ConflictExceptionErrorMessage = 'Category already exist';
-const BadRequestExceptionNotFoundErrorMessageForUpdate =
-  'Record to update does not exist';
-const BadRequestExceptionInvalid = "Invalid ID";
-const BadRequestExceptionNotFoundErrorMessageForDelete =
-  'Record to delete does not exist';
-const BadRequestExceptionNotFoundErrorMessage =
-  'Entity with ID not found';
+import { CategoryModuleMessages } from 'src/utils/appMessges';
 
 @Injectable()
 export class CategoryService {
@@ -21,14 +13,14 @@ export class CategoryService {
   async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
     try {
       const category = await this.prisma.category.create({
-        data:{
-          ...createCategoryDto
-        }
+        data: {
+          ...createCategoryDto,
+        },
       });
       return category;
     } catch (error) {
       if (error.code === 'P2002') {
-        throw new ConflictException(ConflictExceptionErrorMessage);
+        throw new ConflictException(CategoryModuleMessages.ConflictExceptionErrorMessage);
       }
       throw new BadRequestException(error.message);
     }
@@ -63,11 +55,10 @@ export class CategoryService {
       });
 
       if (user) return user;
-      throw new BadRequestException(BadRequestExceptionNotFoundErrorMessage);
-
+      throw new BadRequestException(CategoryModuleMessages.BadRequestExceptionNotFoundErrorMessage);
     } catch (error) {
-      if(error.code === "P2023"){
-        throw new BadRequestException(BadRequestExceptionInvalid);
+      if (error.code === 'P2023') {
+        throw new BadRequestException(CategoryModuleMessages.BadRequestExceptionInvalid);
       }
       throw new BadRequestException(error.message);
     }
@@ -86,16 +77,14 @@ export class CategoryService {
       return updatedCategory;
     } catch (error) {
       if (error.code === 'P2025') {
-        throw new BadRequestException(
-          BadRequestExceptionNotFoundErrorMessageForUpdate,
-        );
+        throw new BadRequestException(CategoryModuleMessages.BadRequestExceptionNotFoundErrorMessageForUpdate);
       }
       throw new BadRequestException(error.message);
     }
   }
 
   async remove(id: string) {
-     try {
+    try {
       const deleteCategory = await this.prisma.category.delete({
         where: {
           id: id,
@@ -104,9 +93,7 @@ export class CategoryService {
       return deleteCategory;
     } catch (error) {
       if (error.code === 'P2025') {
-        throw new BadRequestException(
-          BadRequestExceptionNotFoundErrorMessageForDelete,
-        );
+        throw new BadRequestException(CategoryModuleMessages.BadRequestExceptionNotFoundErrorMessageForDelete);
       }
       throw new BadRequestException(error.message);
     }
