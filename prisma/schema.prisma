@@ -42,6 +42,7 @@ model User {
   role         Role
   likes        Like[]
   review       Review[]
+  profile      Profile?
   googleUser   Boolean  @default(false)
   facebookUser Boolean  @default(false)
   appleUser    Boolean  @default(false)
@@ -101,3 +102,15 @@ model Review {
   updatedAt      DateTime @updatedAt
 }
 
+model Profile {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  bio           String?
+  avatar        String?
+  serviceUpdate Boolean?  @default(false)
+  sound         Boolean?  @default(false)
+  notification  Boolean?  @default(false)
+  userId        String   @unique @db.ObjectId
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

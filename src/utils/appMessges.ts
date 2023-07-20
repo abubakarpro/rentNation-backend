@@ -22,7 +22,7 @@ export const ReviewModuleMessgaes = {
 };
 
 export const UserModuleMessages = {
-  UnauthorizedExceptionErrorMessage: 'Please check you login credentials',
+  UnauthorizedExceptionErrorMessage: 'Please check your login credentials',
   BadRequestExceptionNotFoundErrorMessageForUpdate: 'Record to update does not exist',
   BadRequestExceptionNotFoundErrorMessageForDelete: 'Record to delete does not exist',
   ConflictExceptionErrorMessage: 'User already exist',
@@ -31,4 +31,13 @@ export const UserModuleMessages = {
   BadRequestExceptionPasswordMessage: 'Old password is not correct!',
   UserNotExist: 'User Not exist',
   ForbiddenExceptionErrorMessage: "You don't have permission to create account for SUB-ADMIN or ADMIN",
+  NotFoundExceptionErrorMessage: 'Email not found',
+};
+
+export const ProfileModuleMessages = {
+  ConflictExceptionErrorMessage: 'Profile already exist',
+  BadRequestExceptionNotFoundErrorMessageForUpdate: 'Record to update does not exist',
+  BadRequestExceptionInvalid: 'Invalid ID',
+  BadRequestExceptionNotFoundErrorMessageForDelete: 'Record to delete does not exist',
+  BadRequestExceptionNotFoundErrorMessage: 'Entity with ID not found',
 };

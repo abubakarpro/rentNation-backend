@@ -4,6 +4,7 @@ import {
   UnauthorizedException,
   ConflictException,
   ForbiddenException,
+  NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
@@ -43,7 +44,14 @@ export class UsersService {
           email: email,
         },
       });
-      if (user && (await bcrypt.compare(password, user.password))) {
+
+      if (!user) {
+        throw new NotFoundException(UserModuleMessages.NotFoundExceptionErrorMessage);
+      }
+
+      const passwordMatches = await bcrypt.compare(password, user.password);
+
+      if (passwordMatches) {
         const payload: { email: string } = {
           email,
         };

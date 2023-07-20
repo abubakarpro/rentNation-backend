@@ -8,12 +8,17 @@ import { UsersModule } from './users/users.module';
 import { CategoryModule } from './category/category.module';
 import { ProductModule } from './product/product.module';
 import { ReviewModule } from './review/review.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    UsersModule, 
-    PrismaModule, CategoryModule, ProductModule, ReviewModule
+    UsersModule,
+    PrismaModule,
+    CategoryModule,
+    ProductModule,
+    ReviewModule,
+    ProfileModule,
   ],
   controllers: [AppController],
   providers: [AppService, ConfigService],

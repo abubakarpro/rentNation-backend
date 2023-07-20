@@ -23,13 +23,12 @@ async function bootstrap() {
     .build();
 
   app.enableCors();
-  app.enableCors({ origin: '*', credentials: true });
+  //app.enableCors({ origin: '*' });
   app.setGlobalPrefix(apiPrefix);
   app.useGlobalPipes(apiValidationPipes);
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-
 
   await app.listen(Number(configService.get('PORT')) || 3001);
 }
