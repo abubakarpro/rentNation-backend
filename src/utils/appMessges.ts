@@ -57,3 +57,11 @@ export const TicketModuleMessages = {
   BadRequestExceptionNotFoundErrorMessageForDelete: 'Record to delete does not exist',
   BadRequestExceptionNotFoundErrorMessage: 'Entity with ID not found',
 };
+
+export const DamageReportModuleMessages = {
+  ConflictExceptionErrorMessage: 'DamageReport already exist',
+  BadRequestExceptionNotFoundErrorMessageForUpdate: 'Record to update does not exist',
+  BadRequestExceptionInvalid: 'Invalid ID',
+  BadRequestExceptionNotFoundErrorMessageForDelete: 'Record to delete does not exist',
+  BadRequestExceptionNotFoundErrorMessage: 'Entity with ID not found',
+};
