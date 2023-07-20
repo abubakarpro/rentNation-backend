@@ -49,3 +49,11 @@ export const CartModuleMessages = {
   BadRequestExceptionNotFoundErrorMessageForDelete: 'Record to delete does not exist',
   BadRequestExceptionNotFoundErrorMessage: 'Record not found',
 };
+
+export const TicketModuleMessages = {
+  ConflictExceptionErrorMessage: 'Ticket already exist',
+  BadRequestExceptionNotFoundErrorMessageForUpdate: 'Record to update does not exist',
+  BadRequestExceptionInvalid: 'Invalid ID',
+  BadRequestExceptionNotFoundErrorMessageForDelete: 'Record to delete does not exist',
+  BadRequestExceptionNotFoundErrorMessage: 'Entity with ID not found',
+};
