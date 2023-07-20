@@ -42,6 +42,7 @@ model User {
   role         Role
   likes        Like[]
   review       Review[]
+  carts        Cart[]
   profile      Profile?
   googleUser   Boolean  @default(false)
   facebookUser Boolean  @default(false)
@@ -59,24 +60,25 @@ model Category {
 }
 
 model Product {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
   name            String
   description     String?
   location        Location
   images          String[]
-  categoryId      String   @db.ObjectId
-  category        Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId      String        @db.ObjectId
+  category        Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   quantity        Int
   pricePerDay     Float
   discountPerWeek Float
   properties      Json
   availableFrom   String
   availableTo     String
-  viewCounter     Int?     @default(0)
+  viewCounter     Int?          @default(0)
   likes           Like[]
   review          Review[]
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  CartProduct     CartProduct[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }
 
 model Like {
@@ -102,6 +104,26 @@ model Review {
   updatedAt      DateTime @updatedAt
 }
 
+model Cart {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String        @db.ObjectId
+  quantity    Int
+  subTotal    Float
+  totalPrice  Float
+  CartProduct CartProduct[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model CartProduct {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  productId String  @db.ObjectId
+  cartId    String  @db.ObjectId
+  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
 model Profile {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   bio           String?
@@ -113,4 +135,5 @@ model Profile {
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
 }

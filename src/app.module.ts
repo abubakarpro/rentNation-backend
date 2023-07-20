@@ -8,6 +8,8 @@ import { UsersModule } from './users/users.module';
 import { CategoryModule } from './category/category.module';
 import { ProductModule } from './product/product.module';
 import { ReviewModule } from './review/review.module';
+
+import { CartModule } from './cart/cart.module';
 import { ProfileModule } from './profile/profile.module';
 
 @Module({
@@ -18,6 +20,7 @@ import { ProfileModule } from './profile/profile.module';
     CategoryModule,
     ProductModule,
     ReviewModule,
+    CartModule,
     ProfileModule,
   ],
   controllers: [AppController],

@@ -3,7 +3,7 @@ export const CategoryModuleMessages = {
   BadRequestExceptionNotFoundErrorMessageForUpdate: 'Record to update does not exist',
   BadRequestExceptionInvalid: 'Invalid ID',
   BadRequestExceptionNotFoundErrorMessageForDelete: 'Record to delete does not exist',
-  BadRequestExceptionNotFoundErrorMessage: 'Entity with ID not found',
+  BadRequestExceptionNotFoundErrorMessage: 'Record not found',
 };
 
 export const ProductModuleMessages = {
@@ -11,14 +11,14 @@ export const ProductModuleMessages = {
   BadRequestExceptionInvalid: 'Invalid ID',
   BadRequestExceptionNotFoundErrorMessageForUpdate: 'Record to update does not exist',
   BadRequestExceptionNotFoundErrorMessageForDelete: 'Record to delete does not exist',
-  BadRequestExceptionNotFoundErrorMessage: 'Entity with ID not found',
+  BadRequestExceptionNotFoundErrorMessage: 'Record not found',
   ErrorMessage: 'Category not found',
   ConflictExceptionProductErrorMessage: 'This Product is already Liked.',
 };
 
 export const ReviewModuleMessgaes = {
   BadRequestExceptionInvalid: 'Invalid ID',
-  BadRequestExceptionNotFoundErrorMessage: 'Entity with ID not found',
+  BadRequestExceptionNotFoundErrorMessage: 'Record not found',
 };
 
 export const UserModuleMessages = {
@@ -27,7 +27,7 @@ export const UserModuleMessages = {
   BadRequestExceptionNotFoundErrorMessageForDelete: 'Record to delete does not exist',
   ConflictExceptionErrorMessage: 'User already exist',
   BadRequestExceptionInvalid: 'Invalid ID',
-  BadRequestExceptionNotFoundErrorMessage: 'Entity with ID not found',
+  BadRequestExceptionNotFoundErrorMessage: 'Record not found',
   BadRequestExceptionPasswordMessage: 'Old password is not correct!',
   UserNotExist: 'User Not exist',
   ForbiddenExceptionErrorMessage: "You don't have permission to create account for SUB-ADMIN or ADMIN",
@@ -40,4 +40,12 @@ export const ProfileModuleMessages = {
   BadRequestExceptionInvalid: 'Invalid ID',
   BadRequestExceptionNotFoundErrorMessageForDelete: 'Record to delete does not exist',
   BadRequestExceptionNotFoundErrorMessage: 'Entity with ID not found',
+};
+
+export const CartModuleMessages = {
+  ConflictExceptionErrorMessage: 'Cart already exist',
+  BadRequestExceptionNotFoundErrorMessageForUpdate: 'Record to update does not exist',
+  BadRequestExceptionInvalid: 'Invalid ID',
+  BadRequestExceptionNotFoundErrorMessageForDelete: 'Record to delete does not exist',
+  BadRequestExceptionNotFoundErrorMessage: 'Record not found',
 };
