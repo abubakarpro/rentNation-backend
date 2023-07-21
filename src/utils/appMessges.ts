@@ -48,6 +48,7 @@ export const CartModuleMessages = {
   BadRequestExceptionInvalid: 'Invalid ID',
   BadRequestExceptionNotFoundErrorMessageForDelete: 'Record to delete does not exist',
   BadRequestExceptionNotFoundErrorMessage: 'Record not found',
+  BadRequestExceptionProductErrorMessage: 'Products should not be empty',
 };
 
 export const TicketModuleMessages = {

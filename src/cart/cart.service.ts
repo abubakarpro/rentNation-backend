@@ -1,4 +1,4 @@
-import { Injectable, ConflictException, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 
 import { Cart, Prisma } from '@prisma/client';
 
@@ -13,6 +13,9 @@ export class CartService {
   async createCart(createCartDto: CreateCartDto): Promise<Cart> {
     const { userId, quantity, subTotal, totalPrice, productId } = createCartDto;
     try {
+      if (productId.length === 0) {
+        throw new BadRequestException(CartModuleMessages.BadRequestExceptionProductErrorMessage);
+      }
       const cartData = await this.prisma.cart.create({
         data: {
           userId: userId,
