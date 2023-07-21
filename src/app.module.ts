@@ -12,6 +12,7 @@ import { DamageReportModule } from './damage-report/damage-report.module';
 import { TicketModule } from './ticket/ticket.module';
 import { CartModule } from './cart/cart.module';
 import { ProfileModule } from './profile/profile.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ProfileModule } from './profile/profile.module';
     TicketModule,
     CartModule,
     ProfileModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService, ConfigService],

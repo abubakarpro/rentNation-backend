@@ -40,6 +40,9 @@ export class CategoryService {
         take,
         cursor,
         orderBy,
+        include: {
+          products: true,
+        },
       });
     } catch (error) {
       throw new BadRequestException(error.message);
