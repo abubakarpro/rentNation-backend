@@ -73,3 +73,8 @@ export const NotificationModuleMessages = {
   BadRequestExceptionNotFoundErrorMessageForDelete: 'Record to delete does not exist',
   BadRequestExceptionNotFoundErrorMessage: 'Record not found',
 };
+
+export const ContactUsModuleMessages = {
+  SuccessfullySentEmailMessage: 'Email sent successfully!',
+  BadRequestExceptionEmailNotSent: 'Error sending email',
+};
