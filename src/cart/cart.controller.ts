@@ -28,7 +28,7 @@ export class CartController {
     return this.cartService.findOneCart(id);
   }
 
-  @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.ADMIN))
+  // @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.ADMIN))
   @Put(':id')
   @ApiParam({ name: 'id' })
   updateCart(@Param('id') id: string, @Body() updateCartDto) {

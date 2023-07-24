@@ -4,16 +4,15 @@ import { Cart, Prisma } from '@prisma/client';
 
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CartModuleMessages } from 'src/utils/appMessges';
-import { CreateCartDto } from './dto/create-cart.dto';
 
 @Injectable()
 export class CartService {
   constructor(private prisma: PrismaService) {}
 
-  async createCart(createCartDto: CreateCartDto): Promise<Cart> {
-    const { userId, quantity, subTotal, totalPrice, productId } = createCartDto;
+  async createCart(createCartDto): Promise<Cart> {
+    const { userId, quantity, subTotal, totalPrice, productId, productData } = createCartDto;
     try {
-      if (productId.length === 0) {
+      if (productId.length === 0 || productData.length === 0) {
         throw new BadRequestException(CartModuleMessages.BadRequestExceptionProductErrorMessage);
       }
       const cartData = await this.prisma.cart.create({
@@ -22,9 +21,10 @@ export class CartService {
           quantity: quantity,
           subTotal: subTotal,
           totalPrice: totalPrice,
+          productData: productData,
           CartProduct: {
-            create: productId.map((id) => ({
-              product: { connect: { id: id } },
+            create: productData.map((product) => ({
+              product: { connect: { id: product.id } },
             })),
           },
         },
@@ -109,10 +109,10 @@ export class CartService {
           },
         });
 
-        const createPromisesForProductCreation = updateCartDto.productId.map((productId) =>
+        const createPromisesForProductCreation = updateCartDto.productData.map((product) =>
           this.prisma.cartProduct.create({
             data: {
-              productId,
+              productId: product.id,
               cartId: id,
             },
           }),
@@ -129,6 +129,7 @@ export class CartService {
           userId: updateCartDto.userId,
           quantity: updateCartDto.quantity,
           subTotal: updateCartDto.subTotal,
+          productData: updateCartDto.productData,
           totalPrice: updateCartDto.totalPrice,
         },
         include: {

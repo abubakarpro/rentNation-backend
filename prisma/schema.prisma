@@ -134,6 +134,8 @@ model Cart {
   quantity    Int
   subTotal    Float
   totalPrice  Float
+  productData Json
+  status      String
   CartProduct CartProduct[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
