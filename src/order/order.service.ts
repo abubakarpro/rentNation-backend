@@ -1,63 +1,69 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 
-import { Cart, Prisma } from '@prisma/client';
+import { Order, Prisma } from '@prisma/client';
 
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CartModuleMessages } from 'src/utils/appMessges';
+import { OrderModuleMessages } from 'src/utils/appMessges';
+import { CreateOrderDto } from './dto/create-order.dto';
 
 @Injectable()
-export class CartService {
+export class OrderService {
   constructor(private prisma: PrismaService) {}
 
-  async createCart(createCartDto): Promise<Cart> {
-    const { userId, quantity, subTotal, totalPrice, productId, productData } = createCartDto;
+  async createOrder(createOrderDto): Promise<Order> {
+    const { userId, subTotal, totalPrice, productData, status } = createOrderDto;
     try {
-      if (productId.length === 0 || productData.length === 0) {
-        throw new BadRequestException(CartModuleMessages.BadRequestExceptionProductErrorMessage);
+      if (productData.length === 0) {
+        throw new BadRequestException(OrderModuleMessages.BadRequestExceptionProductErrorMessage);
       }
-      const cartData = await this.prisma.cart.create({
+
+      const orderData = await this.prisma.order.create({
         data: {
           userId: userId,
-          quantity: quantity,
+          status: status,
           subTotal: subTotal,
           totalPrice: totalPrice,
           productData: productData,
-          CartProduct: {
+          OrderProduct: {
             create: productData.map((product) => ({
               product: { connect: { id: product.id } },
             })),
           },
         },
         include: {
-          CartProduct: {
+          OrderProduct: {
             include: {
               product: true,
             },
           },
         },
       });
-      return cartData;
+      return orderData;
     } catch (error) {
+      console.log('eeeee', error);
+      if (error.code === 'P2025') {
+        throw new BadRequestException(OrderModuleMessages.BadRequestExceptionNotFoundErrorMessage);
+      }
       throw new BadRequestException(error.message);
     }
   }
 
-  async findAllCart(params: {
+  async findAllOrder(params: {
     skip?: number;
     take?: number;
     cursor?: Prisma.UserWhereUniqueInput;
     where?: Prisma.UserWhereInput;
     orderBy?: Prisma.UserOrderByWithRelationInput;
-  }): Promise<Cart[]> {
+  }): Promise<Order[]> {
     try {
       const { skip, take, cursor, where, orderBy } = params;
-      return this.prisma.cart.findMany({
+      return this.prisma.order.findMany({
         skip,
         take,
         cursor,
         orderBy,
         include: {
-          CartProduct: {
+          OrderProduct: {
             include: {
               product: true,
             },
@@ -69,14 +75,14 @@ export class CartService {
     }
   }
 
-  async findOneCart(id: string): Promise<Cart> {
+  async findOneOrder(id: string): Promise<Order> {
     try {
-      const cart = await this.prisma.cart.findUnique({
+      const order = await this.prisma.order.findUnique({
         where: {
           id: id,
         },
         include: {
-          CartProduct: {
+          OrderProduct: {
             include: {
               product: true,
             },
@@ -84,74 +90,72 @@ export class CartService {
         },
       });
 
-      if (cart) return cart;
-      throw new BadRequestException(CartModuleMessages.BadRequestExceptionNotFoundErrorMessage);
+      if (order) return order;
+      throw new BadRequestException(OrderModuleMessages.BadRequestExceptionNotFoundErrorMessage);
     } catch (error) {
       if (error.code === 'P2023') {
-        throw new BadRequestException(CartModuleMessages.BadRequestExceptionInvalid);
+        throw new BadRequestException(OrderModuleMessages.BadRequestExceptionInvalid);
       }
       throw new BadRequestException(error.message);
     }
   }
 
-  async updateCart(id: string, updateCartDto): Promise<Cart> {
+  async updateOrder(id: string, updateOrderDto): Promise<Order> {
     try {
-      const cart = await this.prisma.cart.findUnique({
+      const order = await this.prisma.order.findUnique({
         where: {
           id: id,
         },
       });
 
-      if (cart) {
-        const deleteCartProduct = await this.prisma.cartProduct.deleteMany({
+      if (order) {
+        const deleteOrderProduct = await this.prisma.orderProduct.deleteMany({
           where: {
-            cartId: id,
+            orderId: id,
           },
         });
 
-        const createPromisesForProductCreation = updateCartDto.productData.map((product) =>
-          this.prisma.cartProduct.create({
+        const createPromisesForProductCreation = updateOrderDto.productData.map((product) =>
+          this.prisma.orderProduct.create({
             data: {
               productId: product.id,
-              cartId: id,
+              orderId: id,
             },
           }),
         );
-
         await Promise.all(createPromisesForProductCreation);
       }
 
-      const updatedCart = await this.prisma.cart.update({
+      const updatedOrder = await this.prisma.order.update({
         where: {
           id: id,
         },
         data: {
-          userId: updateCartDto.userId,
-          quantity: updateCartDto.quantity,
-          subTotal: updateCartDto.subTotal,
-          productData: updateCartDto.productData,
-          totalPrice: updateCartDto.totalPrice,
+          userId: updateOrderDto.userId,
+          subTotal: updateOrderDto.subTotal,
+          productData: updateOrderDto.productData,
+          totalPrice: updateOrderDto.totalPrice,
         },
         include: {
-          CartProduct: {
+          OrderProduct: {
             include: {
               product: true,
             },
           },
         },
       });
-      return updatedCart;
+      return updatedOrder;
     } catch (error) {
       if (error.code === 'P2025') {
-        throw new BadRequestException(CartModuleMessages.BadRequestExceptionNotFoundErrorMessageForUpdate);
+        throw new BadRequestException(OrderModuleMessages.BadRequestExceptionNotFoundErrorMessageForUpdate);
       }
       throw new BadRequestException(error.message);
     }
   }
 
-  async removeCart(id: string): Promise<Cart> {
+  async removeOrder(id: string): Promise<Order> {
     try {
-      const deleteCategory = await this.prisma.cart.delete({
+      const deleteCategory = await this.prisma.order.delete({
         where: {
           id: id,
         },
@@ -159,7 +163,7 @@ export class CartService {
       return deleteCategory;
     } catch (error) {
       if (error.code === 'P2025') {
-        throw new BadRequestException(CartModuleMessages.BadRequestExceptionNotFoundErrorMessageForDelete);
+        throw new BadRequestException(OrderModuleMessages.BadRequestExceptionNotFoundErrorMessageForDelete);
       }
       throw new BadRequestException(error.message);
     }

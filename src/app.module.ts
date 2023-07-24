@@ -10,7 +10,7 @@ import { ProductModule } from './product/product.module';
 import { ReviewModule } from './review/review.module';
 import { DamageReportModule } from './damage-report/damage-report.module';
 import { TicketModule } from './ticket/ticket.module';
-import { CartModule } from './cart/cart.module';
+import { OrderModule } from './order/order.module';
 import { ProfileModule } from './profile/profile.module';
 import { NotificationModule } from './notification/notification.module';
 import { ContactUsModule } from './contact-us/contact-us.module';
@@ -25,7 +25,7 @@ import { ContactUsModule } from './contact-us/contact-us.module';
     ReviewModule,
     DamageReportModule,
     TicketModule,
-    CartModule,
+    OrderModule,
     ProfileModule,
     NotificationModule,
     ContactUsModule,

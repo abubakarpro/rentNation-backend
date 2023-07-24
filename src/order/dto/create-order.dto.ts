@@ -1,7 +1,7 @@
 import { IsString, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateCartDto {
+export class CreateOrderDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
@@ -15,10 +15,6 @@ export class CreateCartDto {
   @ApiProperty()
   @IsNotEmpty()
   productData: JSON;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  quantity: number;
 
   @ApiProperty()
   @IsNotEmpty()

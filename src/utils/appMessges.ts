@@ -42,8 +42,8 @@ export const ProfileModuleMessages = {
   BadRequestExceptionNotFoundErrorMessage: 'Entity with ID not found',
 };
 
-export const CartModuleMessages = {
-  ConflictExceptionErrorMessage: 'Cart already exist',
+export const OrderModuleMessages = {
+  ConflictExceptionErrorMessage: 'order already exist',
   BadRequestExceptionNotFoundErrorMessageForUpdate: 'Record to update does not exist',
   BadRequestExceptionInvalid: 'Invalid ID',
   BadRequestExceptionNotFoundErrorMessageForDelete: 'Record to delete does not exist',
