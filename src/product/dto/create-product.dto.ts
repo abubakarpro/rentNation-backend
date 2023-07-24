@@ -1,20 +1,18 @@
 import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-
 export class locationDto {
   @ApiProperty()
   @IsNotEmpty()
-  placeId: string
+  placeId: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  name: string
+  name: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  city: string
-
+  city: string;
 }
 
 export class CreateProductDto {
@@ -24,14 +22,9 @@ export class CreateProductDto {
   name: string;
 
   @ApiProperty()
-  @IsString()
+  @IsArray()
   @IsNotEmpty()
-  availableFrom: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  availableTo: string;
+  availability: string[];
 
   @ApiProperty()
   @IsString()
@@ -64,8 +57,5 @@ export class CreateProductDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  location: locationDto
-
+  location: locationDto;
 }
-
-

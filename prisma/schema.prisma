@@ -74,13 +74,12 @@ model Product {
   pricePerDay     Float
   discountPerWeek Float
   properties      Json
-  availableFrom   String
-  availableTo     String
   damageReport    DamageReport[]
   viewCounter     Int?           @default(0)
   likes           Like[]
   review          Review[]
   CartProduct     CartProduct[]
+  availability    String[]
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 }

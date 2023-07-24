@@ -20,8 +20,7 @@ export class ProductService {
         properties,
         location,
         discountPerWeek,
-        availableFrom,
-        availableTo,
+        availability,
         images,
       } = createProductDto;
       const categoryExists = await this.prisma.category.findUnique({
@@ -44,8 +43,7 @@ export class ProductService {
           description: description,
           properties: properties,
           location: location,
-          availableFrom: availableFrom,
-          availableTo: availableTo,
+          availability: availability,
           discountPerWeek: discountPerWeek,
           images: images,
           category: {
