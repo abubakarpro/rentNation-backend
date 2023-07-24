@@ -97,6 +97,7 @@ export class ProductService {
         },
         include: {
           category: true,
+          review: true,
         },
       });
 
