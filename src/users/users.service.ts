@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { User, Prisma } from '@prisma/client';
+import { User, Prisma, PrismaClient } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcryptjs';
 
@@ -17,7 +17,10 @@ import { LoginUserDTO } from './dto/login-user.dto';
 import { IUserResponse } from './dto/interface-user';
 import { ResetPasswordUserDTO } from './dto/resetPassword.dto';
 import { OAuthUserDTO } from './dto/OAuthUserDTO.dto';
+import { CreateUserAndProfileDTO } from './dto/update-user-profile.dto';
 import { UserModuleMessages } from 'src/utils/appMessges';
+
+const prismaClient = new PrismaClient();
 
 @Injectable()
 export class UsersService {
@@ -116,6 +119,9 @@ export class UsersService {
         cursor,
         where,
         orderBy,
+        include: {
+          profile: true,
+        },
       });
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -127,6 +133,9 @@ export class UsersService {
       const user = await this.prisma.user.findUnique({
         where: {
           id: id,
+        },
+        include: {
+          profile: true,
         },
       });
       if (user) return user;
@@ -351,6 +360,34 @@ export class UsersService {
     } catch (error) {
       if (error.code === 'P2002') {
         throw new ConflictException(UserModuleMessages.ConflictExceptionErrorMessage);
+      }
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async updateUserAndProfile(id: string, updatedUserAndProdileData: CreateUserAndProfileDTO) {
+    const { name, bio, email } = updatedUserAndProdileData;
+    try {
+      const updatedUserAndProfile = await prismaClient.$transaction([
+        prismaClient.user.update({
+          where: { id: id },
+          data: {
+            name: name,
+            email: email,
+          },
+        }),
+        prismaClient.profile.update({
+          where: { userId: id },
+          data: {
+            bio: bio,
+          },
+        }),
+      ]);
+
+      return updatedUserAndProfile;
+    } catch (error) {
+      if (error.code === 'P2002') {
+        throw new BadRequestException(UserModuleMessages.ConflictExceptionErrorMessage);
       }
       throw new BadRequestException(error.message);
     }

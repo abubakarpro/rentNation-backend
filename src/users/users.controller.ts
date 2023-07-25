@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Body, Param, Delete, UseGuards } from '@nestjs/common';
 import { User as UserModel } from '@prisma/client';
-import { ApiBearerAuth, ApiParam, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 
 import { UsersService } from './users.service';
@@ -9,13 +9,20 @@ import { CreateUserDTO } from './dto/create-user.dto';
 import { ResetPasswordUserDTO } from './dto/resetPassword.dto';
 import { IUserResponse } from './dto/interface-user';
 import { OAuthUserDTO } from './dto/OAuthUserDTO.dto';
-import { RolesGuard } from 'src/users/auth/roles.guard';
-import { Role } from 'src/users/dto/role.enum';
+import { RolesGuard } from '../users/auth/roles.guard';
+import { Role } from '../users/dto/role.enum';
+import { CreateUserAndProfileDTO } from './dto/update-user-profile.dto';
 
 @Controller('users')
 @ApiTags('USER Module')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Put('updateUserAndProfile/:id')
+  @ApiParam({ name: 'id' })
+  updateUserAndProfile(@Param('id') id: string, @Body() updatedUserAndProdileData: CreateUserAndProfileDTO) {
+    return this.usersService.updateUserAndProfile(id, updatedUserAndProdileData);
+  }
 
   @Post('login')
   handleUserLogin(@Body() userlogin: LoginUserDTO): Promise<IUserResponse> {
