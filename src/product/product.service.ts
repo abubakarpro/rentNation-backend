@@ -265,4 +265,23 @@ export class ProductService {
       throw new BadRequestException(error.message);
     }
   }
+
+  async updateProductBasedOnOrder(id: string, updateProductDto): Promise<Product> {
+    try {
+      const updatedProduct = await this.prisma.product.update({
+        where: {
+          id: id,
+        },
+        data: {
+          ...updateProductDto,
+        },
+      });
+      return updatedProduct;
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new BadRequestException(ProductModuleMessages.BadRequestExceptionNotFoundErrorMessageForUpdate);
+      }
+      throw new BadRequestException(error.message);
+    }
+  }
 }

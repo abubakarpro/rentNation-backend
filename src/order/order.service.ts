@@ -4,11 +4,11 @@ import { Order, Prisma } from '@prisma/client';
 
 import { PrismaService } from 'src/prisma/prisma.service';
 import { OrderModuleMessages } from 'src/utils/appMessges';
-import { CreateOrderDto } from './dto/create-order.dto';
+import { ProductService } from 'src/product/product.service';
 
 @Injectable()
 export class OrderService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private readonly ProductService: ProductService) {}
 
   async createOrder(createOrderDto): Promise<Order> {
     const { userId, subTotal, totalPrice, productData, status } = createOrderDto;
@@ -38,9 +38,27 @@ export class OrderService {
           },
         },
       });
+      if (orderData) {
+        productData?.map(async (product) => {
+          const getOriginalProduct = await this.ProductService.findOne(product.id);
+          const getOriginalProductAvailability = getOriginalProduct.availability;
+          const getOriginalProductQuantity = getOriginalProduct.quantity;
+
+          const productDataAvailability = productData.find((item) => item.id === product.id)?.availability || [];
+          const productDataQuantity = productData.find((item) => item.id === product.id)?.quantity || 0;
+          const commonDates = getOriginalProductAvailability.filter((date) => !productDataAvailability.includes(date));
+          const newAvailability = commonDates;
+          const newQuantity = getOriginalProductQuantity - productDataQuantity;
+
+          const updatedProductData = {
+            availability: newAvailability,
+            quantity: newQuantity,
+          };
+          await this.ProductService.updateProductBasedOnOrder(getOriginalProduct.id, updatedProductData);
+        });
+      }
       return orderData;
     } catch (error) {
-      console.log('eeeee', error);
       if (error.code === 'P2025') {
         throw new BadRequestException(OrderModuleMessages.BadRequestExceptionNotFoundErrorMessage);
       }
