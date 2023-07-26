@@ -146,9 +146,7 @@ export class UsersService {
       });
 
       if (user) {
-        const userWithoutPassword = Object.assign({}, user);
-        delete userWithoutPassword.password;
-        return userWithoutPassword;
+        return user;
       }
       throw new BadRequestException(UserModuleMessages.BadRequestExceptionNotFoundErrorMessage);
     } catch (error) {
@@ -209,13 +207,11 @@ export class UsersService {
       if (user && (await bcrypt.compare(resetPasswordReq.oldPassword, user.password))) {
         const salt = await bcrypt.genSalt();
         const hashedPassword: string = await bcrypt.hash(resetPasswordReq.newPassword, salt);
-        delete user.id;
         const updatedUser = await this.prisma.user.update({
           where: {
             id: id,
           },
           data: {
-            ...user,
             password: hashedPassword,
           },
         });
