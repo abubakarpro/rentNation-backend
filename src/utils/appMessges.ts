@@ -78,3 +78,11 @@ export const ContactUsModuleMessages = {
   SuccessfullySentEmailMessage: 'Email sent successfully!',
   BadRequestExceptionEmailNotSent: 'Error sending email',
 };
+
+export const TransactionModuleMessages = {
+  ConflictExceptionErrorMessage: 'Transaction already exist',
+  BadRequestExceptionNotFoundErrorMessageForUpdate: 'Record to update does not exist',
+  BadRequestExceptionInvalid: 'Invalid ID',
+  BadRequestExceptionNotFoundErrorMessageForDelete: 'Record to delete does not exist',
+  BadRequestExceptionNotFoundErrorMessage: 'Record not found',
+};

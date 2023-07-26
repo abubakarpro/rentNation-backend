@@ -2,8 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
-  binaryTargets   = ["darwin-arm64", "rhel-openssl-1.0.x"]
+  provider      = "prisma-client-js"
+  binaryTargets = ["darwin-arm64", "rhel-openssl-1.0.x"]
 }
 
 datasource db {
@@ -50,9 +50,10 @@ model User {
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   ticket       Ticket[]
-  orders        Order[]
+  orders       Order[]
   profile      Profile?
   Notification Notification[]
+  Transaction  Transaction[]
 }
 
 model Category {
@@ -79,7 +80,7 @@ model Product {
   viewCounter     Int?           @default(0)
   likes           Like[]
   review          Review[]
-  OrderProduct     OrderProduct[]
+  OrderProduct    OrderProduct[]
   availability    String[]
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
@@ -129,23 +130,24 @@ model Ticket {
 }
 
 model Order {
-  id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String        @db.ObjectId
-  subTotal    Float
-  totalPrice  Float
-  productData Json
-  status      String
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String         @db.ObjectId
+  subTotal     Float
+  totalPrice   Float
+  productData  Json
+  status       String
   OrderProduct OrderProduct[]
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  Transaction  Transaction[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 }
 
 model OrderProduct {
   id        String  @id @default(auto()) @map("_id") @db.ObjectId
   productId String  @db.ObjectId
-  orderId    String  @db.ObjectId
-  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   String  @db.ObjectId
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
@@ -166,5 +168,18 @@ model Notification {
   id      String @id @default(auto()) @map("_id") @db.ObjectId
   user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  String @db.ObjectId
-  message String 
+  message String
+}
+
+model Transaction {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  amount        Float
+  paymentId     String?
+  paymentStatus String?
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String   @db.ObjectId
+  orderId       String   @unique @db.ObjectId
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }

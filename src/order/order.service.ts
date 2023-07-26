@@ -1,14 +1,20 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 
 import { Order, Prisma } from '@prisma/client';
+import { v4 as uuidv4 } from 'uuid';
 
 import { PrismaService } from 'src/prisma/prisma.service';
 import { OrderModuleMessages } from 'src/utils/appMessges';
-import { ProductService } from 'src/product/product.service';
+import { ProductService } from '../product/product.service';
+import { TransactionService } from '../transaction/transaction.service';
 
 @Injectable()
 export class OrderService {
-  constructor(private prisma: PrismaService, private readonly ProductService: ProductService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly ProductService: ProductService,
+    private readonly TransactionService: TransactionService,
+  ) {}
 
   async createOrder(createOrderDto): Promise<Order> {
     const { userId, subTotal, totalPrice, productData, status } = createOrderDto;
@@ -56,6 +62,14 @@ export class OrderService {
           };
           await this.ProductService.updateProductBasedOnOrder(getOriginalProduct.id, updatedProductData);
         });
+        const createTransactionData = {
+          userId: userId,
+          orderId: orderData.id,
+          amount: totalPrice,
+          paymentId: uuidv4(),
+          paymentStatus: 'payed',
+        };
+        await this.TransactionService.createTranscation(createTransactionData);
       }
       return orderData;
     } catch (error) {

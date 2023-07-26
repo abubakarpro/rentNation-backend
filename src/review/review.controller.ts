@@ -25,9 +25,4 @@ export class ReviewController {
   getReviewsByProduct(@Param('id') productId: string) {
     return this.reviewService.getProductAllReview(productId);
   }
-
-  
-
-
-
 }
