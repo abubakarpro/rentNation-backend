@@ -15,32 +15,32 @@ export class CategoryController {
   //Validate User based on Role
   @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.ADMIN))
   @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoryService.create(createCategoryDto);
+  createCategory(@Body() createCategoryDto: CreateCategoryDto) {
+    return this.categoryService.createCategory(createCategoryDto);
   }
 
   @Get()
-  findAll() {
-    return this.categoryService.findAll({});
+  findAllCategories() {
+    return this.categoryService.findAllCategories({});
   }
 
   @Get(':id')
   @ApiParam({ name: 'id' })
-  findOne(@Param('id') id: string) {
-    return this.categoryService.findOne(id);
+  findOneCategory(@Param('id') id: string) {
+    return this.categoryService.findOneCategory(id);
   }
 
   @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.ADMIN))
   @Put(':id')
   @ApiParam({ name: 'id' })
-  update(@Param('id') id: string, @Body() updateCategoryDto: CreateCategoryDto) {
-    return this.categoryService.update(id, updateCategoryDto);
+  updateCategory(@Param('id') id: string, @Body() updateCategoryDto: CreateCategoryDto) {
+    return this.categoryService.updateCategory(id, updateCategoryDto);
   }
 
   @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.ADMIN))
   @Delete(':id')
   @ApiParam({ name: 'id' })
-  remove(@Param('id') id: string) {
-    return this.categoryService.remove(id);
+  removeCategory(@Param('id') id: string) {
+    return this.categoryService.removeCategory(id);
   }
 }

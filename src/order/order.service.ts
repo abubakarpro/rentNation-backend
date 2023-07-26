@@ -40,7 +40,7 @@ export class OrderService {
       });
       if (orderData) {
         productData?.map(async (product) => {
-          const getOriginalProduct = await this.ProductService.findOne(product.id);
+          const getOriginalProduct = await this.ProductService.findOneProduct(product.id);
           const getOriginalProductAvailability = getOriginalProduct.availability;
           const getOriginalProductQuantity = getOriginalProduct.quantity;
 

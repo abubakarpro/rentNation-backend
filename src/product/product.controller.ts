@@ -27,31 +27,31 @@ export class ProductController {
   }
 
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
+  createProduct(@Body() createProductDto: CreateProductDto) {
+    return this.productService.createProduct(createProductDto);
   }
 
   @Get()
-  findAll() {
-    return this.productService.findAll({});
+  findAllProducts() {
+    return this.productService.findAllProducts({});
   }
 
   @Get(':id')
   @ApiParam({ name: 'id' })
-  findOne(@Param('id') id: string) {
-    return this.productService.findOne(id);
+  findOneProduct(@Param('id') id: string) {
+    return this.productService.findOneProduct(id);
   }
 
   @Put(':id')
   @ApiParam({ name: 'id' })
-  update(@Param('id') id: string, @Body() updateProductDto: CreateProductDto) {
-    return this.productService.update(id, updateProductDto);
+  updateProduct(@Param('id') id: string, @Body() updateProductDto: CreateProductDto) {
+    return this.productService.updateProduct(id, updateProductDto);
   }
 
   @Delete(':id')
   @ApiParam({ name: 'id' })
-  remove(@Param('id') id: string) {
-    return this.productService.remove(id);
+  removeProduct(@Param('id') id: string) {
+    return this.productService.removeProduct(id);
   }
 
   @Post(':userId/likes/:productId')

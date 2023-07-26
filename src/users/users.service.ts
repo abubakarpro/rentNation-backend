@@ -60,8 +60,11 @@ export class UsersService {
         };
         const accessToken: string = this.jwtService.sign(payload);
 
+        const userWithoutPassword = Object.assign({}, user);
+        delete userWithoutPassword.password;
+
         return {
-          user: user,
+          user: userWithoutPassword,
           accessToken: accessToken,
         };
       }
@@ -74,7 +77,7 @@ export class UsersService {
     }
   }
 
-  async create(userCreateReq: CreateUserDTO): Promise<IUserResponse> {
+  async createUser(userCreateReq: CreateUserDTO): Promise<IUserResponse> {
     try {
       if (userCreateReq.role === 'SUB_ADMIN' || userCreateReq.role === 'ADMIN') {
         throw new ForbiddenException(UserModuleMessages.ForbiddenExceptionErrorMessage);
@@ -92,8 +95,11 @@ export class UsersService {
         },
       });
 
+      const userWithoutPassword = Object.assign({}, user);
+      delete userWithoutPassword.password;
+
       return {
-        user: user,
+        user: userWithoutPassword,
         accessToken: accessToken,
       };
     } catch (error) {
@@ -104,7 +110,7 @@ export class UsersService {
     }
   }
 
-  async findAll(params: {
+  async findAllUser(params: {
     skip?: number;
     take?: number;
     cursor?: Prisma.UserWhereUniqueInput;
@@ -128,7 +134,7 @@ export class UsersService {
     }
   }
 
-  async findOne(id: string): Promise<User> {
+  async findOneUser(id: string): Promise<User> {
     try {
       const user = await this.prisma.user.findUnique({
         where: {
@@ -138,7 +144,12 @@ export class UsersService {
           profile: true,
         },
       });
-      if (user) return user;
+
+      if (user) {
+        const userWithoutPassword = Object.assign({}, user);
+        delete userWithoutPassword.password;
+        return userWithoutPassword;
+      }
       throw new BadRequestException(UserModuleMessages.BadRequestExceptionNotFoundErrorMessage);
     } catch (error) {
       if (error.code === 'P2023') {
@@ -148,7 +159,7 @@ export class UsersService {
     }
   }
 
-  async update(id: string, data: CreateUserDTO): Promise<User> {
+  async updateUser(id: string, data: CreateUserDTO): Promise<User> {
     try {
       const salt = await bcrypt.genSalt();
       const hashedPassword: string = await bcrypt.hash(data.password, salt);
@@ -162,7 +173,11 @@ export class UsersService {
           password: hashedPassword,
         },
       });
-      return updatedUser;
+
+      const userWithoutPassword = Object.assign({}, updatedUser);
+      delete userWithoutPassword.password;
+
+      return userWithoutPassword;
     } catch (error) {
       if (error.code === 'P2025') {
         throw new BadRequestException(UserModuleMessages.BadRequestExceptionNotFoundErrorMessageForUpdate);
@@ -171,7 +186,7 @@ export class UsersService {
     }
   }
 
-  async remove(id: string): Promise<User> {
+  async removeUser(id: string): Promise<User> {
     try {
       const deleteCustomer = await this.prisma.user.delete({
         where: {
@@ -189,7 +204,7 @@ export class UsersService {
 
   async handleResetPassword(id: string, resetPasswordReq: ResetPasswordUserDTO): Promise<any> {
     try {
-      const user = await this.findOne(id);
+      const user = await this.findOneUser(id);
       if (!user) throw new BadRequestException(UserModuleMessages.UserNotExist);
       if (user && (await bcrypt.compare(resetPasswordReq.oldPassword, user.password))) {
         const salt = await bcrypt.genSalt();
@@ -353,8 +368,11 @@ export class UsersService {
         },
       });
 
+      const userWithoutPassword = Object.assign({}, user);
+      delete userWithoutPassword.password;
+
       return {
-        user: user,
+        user: userWithoutPassword,
         accessToken: accessToken,
       };
     } catch (error) {

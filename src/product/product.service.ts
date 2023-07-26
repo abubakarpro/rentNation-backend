@@ -9,7 +9,7 @@ import { ProductModuleMessages } from 'src/utils/appMessges';
 export class ProductService {
   constructor(private prisma: PrismaService, private readonly userService: UsersService) {}
 
-  async create(createProductDto): Promise<Product> {
+  async createProduct(createProductDto): Promise<Product> {
     try {
       const {
         name,
@@ -65,7 +65,7 @@ export class ProductService {
     }
   }
 
-  async findAll(params: {
+  async findAllProducts(params: {
     skip?: number;
     take?: number;
     cursor?: Prisma.UserWhereUniqueInput;
@@ -89,7 +89,7 @@ export class ProductService {
     }
   }
 
-  async findOne(id: string): Promise<Product> {
+  async findOneProduct(id: string): Promise<Product> {
     try {
       const product = await this.prisma.product.findUnique({
         where: {
@@ -111,7 +111,7 @@ export class ProductService {
     }
   }
 
-  async update(id: string, updateProductDto): Promise<Product> {
+  async updateProduct(id: string, updateProductDto): Promise<Product> {
     try {
       const categoryExists = await this.prisma.category.findUnique({
         where: {
@@ -143,7 +143,7 @@ export class ProductService {
     }
   }
 
-  async remove(id: string): Promise<Product> {
+  async removeProduct(id: string): Promise<Product> {
     try {
       const deleteProduct = await this.prisma.product.delete({
         where: {
@@ -197,8 +197,8 @@ export class ProductService {
 
   async likeProduct(userId: string, productId: string): Promise<Like> {
     try {
-      await this.userService.findOne(userId);
-      await this.findOne(productId);
+      await this.userService.findOneUser(userId);
+      await this.findOneProduct(productId);
       const alreadyExist = await this.prisma.like.findMany({
         where: {
           productId: productId,

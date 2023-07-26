@@ -57,31 +57,33 @@ export class UsersController {
   }
 
   @Post()
-  create(@Body() userData: CreateUserDTO): Promise<IUserResponse> {
-    return this.usersService.create(userData);
+  createUser(@Body() userData: CreateUserDTO): Promise<IUserResponse> {
+    return this.usersService.createUser(userData);
   }
 
+  @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.ADMIN))
   @Get()
-  findAll(): Promise<UserModel[]> {
-    return this.usersService.findAll({});
+  findAllUser(): Promise<UserModel[]> {
+    return this.usersService.findAllUser({});
   }
 
   @Get(':id')
   @ApiParam({ name: 'id' })
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+  findOneUser(@Param('id') id: string) {
+    return this.usersService.findOneUser(id);
   }
 
   @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.ADMIN))
   @Put(':id')
   @ApiParam({ name: 'id' })
-  update(@Param('id') id: string, @Body() updatedUserData: CreateUserDTO) {
-    return this.usersService.update(id, updatedUserData);
+  updateUser(@Param('id') id: string, @Body() updatedUserData: CreateUserDTO) {
+    return this.usersService.updateUser(id, updatedUserData);
   }
 
+  @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.ADMIN))
   @Delete(':id')
   @ApiParam({ name: 'id' })
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+  removeUser(@Param('id') id: string) {
+    return this.usersService.removeUser(id);
   }
 }

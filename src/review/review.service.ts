@@ -17,8 +17,8 @@ export class ReviewService {
   async createReview(createProductReviewDto): Promise<Review> {
     const { userId, productId, name, reviewComments, stars } = createProductReviewDto;
     try {
-      await this.userService.findOne(userId);
-      await this.productService.findOne(productId);
+      await this.userService.findOneUser(userId);
+      await this.productService.findOneProduct(productId);
 
       const reviewData = await this.prisma.review.create({
         data: {

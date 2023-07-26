@@ -10,7 +10,7 @@ import { CategoryModuleMessages } from 'src/utils/appMessges';
 export class CategoryService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
+  async createCategory(createCategoryDto: CreateCategoryDto): Promise<Category> {
     try {
       const category = await this.prisma.category.create({
         data: {
@@ -26,7 +26,7 @@ export class CategoryService {
     }
   }
 
-  async findAll(params: {
+  async findAllCategories(params: {
     skip?: number;
     take?: number;
     cursor?: Prisma.UserWhereUniqueInput;
@@ -49,15 +49,15 @@ export class CategoryService {
     }
   }
 
-  async findOne(id: string) {
+  async findOneCategory(id: string) {
     try {
-      const user = await this.prisma.category.findUnique({
+      const category = await this.prisma.category.findUnique({
         where: {
           id: id,
         },
       });
 
-      if (user) return user;
+      if (category) return category;
       throw new BadRequestException(CategoryModuleMessages.BadRequestExceptionNotFoundErrorMessage);
     } catch (error) {
       if (error.code === 'P2023') {
@@ -67,7 +67,7 @@ export class CategoryService {
     }
   }
 
-  async update(id: string, updateCategoryDto: CreateCategoryDto) {
+  async updateCategory(id: string, updateCategoryDto: CreateCategoryDto) {
     try {
       const updatedCategory = await this.prisma.category.update({
         where: {
@@ -86,7 +86,7 @@ export class CategoryService {
     }
   }
 
-  async remove(id: string) {
+  async removeCategory(id: string) {
     try {
       const deleteCategory = await this.prisma.category.delete({
         where: {
