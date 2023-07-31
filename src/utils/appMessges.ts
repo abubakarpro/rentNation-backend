@@ -86,3 +86,7 @@ export const TransactionModuleMessages = {
   BadRequestExceptionNotFoundErrorMessageForDelete: 'Record to delete does not exist',
   BadRequestExceptionNotFoundErrorMessage: 'Record not found',
 };
+
+export const FileUploadModuleMessages = {
+  BadRequestExceptionNotFoundFile: 'No file uploaded',
+};

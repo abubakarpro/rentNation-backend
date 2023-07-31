@@ -15,6 +15,7 @@ import { ProfileModule } from './profile/profile.module';
 import { NotificationModule } from './notification/notification.module';
 import { ContactUsModule } from './contact-us/contact-us.module';
 import { TransactionModule } from './transaction/transaction.module';
+import { UploadFileModule } from './upload-file/upload-file.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { TransactionModule } from './transaction/transaction.module';
     NotificationModule,
     ContactUsModule,
     TransactionModule,
+    UploadFileModule,
   ],
   controllers: [AppController],
   providers: [AppService, ConfigService],
