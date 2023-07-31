@@ -32,7 +32,7 @@ export class TicketService {
   }): Promise<Ticket[]> {
     try {
       const { skip, take, cursor, where, orderBy } = params;
-      return this.prisma.ticket.findMany({
+      return await this.prisma.ticket.findMany({
         skip,
         take,
         cursor,

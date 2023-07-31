@@ -32,7 +32,7 @@ export class TransactionService {
   }): Promise<Transaction[]> {
     try {
       const { skip, take, cursor, where, orderBy } = params;
-      return this.prisma.transaction.findMany({
+      return await this.prisma.transaction.findMany({
         skip,
         take,
         cursor,

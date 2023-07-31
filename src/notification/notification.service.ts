@@ -32,7 +32,7 @@ export class NotificationService {
   }): Promise<Notification[]> {
     try {
       const { skip, take, cursor, where, orderBy } = params;
-      return this.prisma.notification.findMany({
+      return await this.prisma.notification.findMany({
         skip,
         take,
         cursor,

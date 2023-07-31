@@ -74,7 +74,7 @@ export class ProductService {
   }): Promise<Product[]> {
     try {
       const { skip, take, cursor, where, orderBy } = params;
-      return this.prisma.product.findMany({
+      return await this.prisma.product.findMany({
         skip,
         take,
         cursor,

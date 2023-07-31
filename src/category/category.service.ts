@@ -35,7 +35,7 @@ export class CategoryService {
   }): Promise<Category[]> {
     try {
       const { skip, take, cursor, where, orderBy } = params;
-      return this.prisma.category.findMany({
+      return await this.prisma.category.findMany({
         skip,
         take,
         cursor,

@@ -89,7 +89,7 @@ export class OrderService {
   }): Promise<Order[]> {
     try {
       const { skip, take, cursor, where, orderBy } = params;
-      return this.prisma.order.findMany({
+      return await this.prisma.order.findMany({
         skip,
         take,
         cursor,

@@ -31,7 +31,7 @@ export class DamageReportService {
   }): Promise<DamageReport[]> {
     try {
       const { skip, take, cursor, where, orderBy } = params;
-      return this.prisma.damageReport.findMany({
+      return await this.prisma.damageReport.findMany({
         skip,
         take,
         cursor,
