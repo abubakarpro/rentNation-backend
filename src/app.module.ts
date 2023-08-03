@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 
 import { PrismaModule } from './prisma/prisma.module';
 import { AppController } from './app.controller';
@@ -16,9 +17,11 @@ import { NotificationModule } from './notification/notification.module';
 import { ContactUsModule } from './contact-us/contact-us.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { UploadFileModule } from './upload-file/upload-file.module';
+import { OtpModule } from './otp/otp.module';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true }),
     UsersModule,
     PrismaModule,
@@ -33,6 +36,7 @@ import { UploadFileModule } from './upload-file/upload-file.module';
     ContactUsModule,
     TransactionModule,
     UploadFileModule,
+    OtpModule,
   ],
   controllers: [AppController],
   providers: [AppService, ConfigService],

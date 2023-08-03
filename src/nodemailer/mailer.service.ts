@@ -7,7 +7,7 @@ import * as nodemailer from 'nodemailer';
 export class MailerService {
   constructor(private readonly configService: ConfigService) {}
 
-  async sendMail(to: string, subject: string, text: string, name: string = ''): Promise<void> {
+  async sendMail(to: string, subject: string = '', text: string, name: string = ''): Promise<void> {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       port: 587,

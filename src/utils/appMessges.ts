@@ -90,3 +90,14 @@ export const TransactionModuleMessages = {
 export const FileUploadModuleMessages = {
   BadRequestExceptionNotFoundFile: 'No file uploaded',
 };
+
+export const OTPServiceMessages = {
+  BadRequestExceptionSendingOTPFailed: 'Failed to send OTP email.',
+  OTPSendingMailSubject: 'OTP Code',
+  OTPSentSuccessfully: 'OTP sent successfully.',
+  OTPNotFound: 'OTP not found.',
+  OTPInvalid: 'Invalid OTP.',
+  OTPExpired: 'OTP has expired.',
+  OTPAlreadyUsed: 'OTP has already been used.',
+  OTPValid: 'OTP is valid.',
+};
