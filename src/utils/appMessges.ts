@@ -101,3 +101,14 @@ export const OTPServiceMessages = {
   OTPAlreadyUsed: 'OTP has already been used.',
   OTPValid: 'OTP is valid.',
 };
+
+export const CloudinaryFileUploadMessages = {
+  InvalidFile: 'Invalid File.',
+  InvalidFileExtention: 'Invalid file extension. Only .png, .jpg, .gif, and .jpeg are allowed.',
+  OTPSentSuccessfully: 'OTP sent successfully.',
+  OTPNotFound: 'OTP not found.',
+  OTPInvalid: 'Invalid OTP.',
+  OTPExpired: 'OTP has expired.',
+  OTPAlreadyUsed: 'OTP has already been used.',
+  OTPValid: 'OTP is valid.',
+};

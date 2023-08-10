@@ -18,6 +18,7 @@ import { ContactUsModule } from './contact-us/contact-us.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { UploadFileModule } from './upload-file/upload-file.module';
 import { OtpModule } from './otp/otp.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { OtpModule } from './otp/otp.module';
     ContactUsModule,
     TransactionModule,
     UploadFileModule,
+    CloudinaryModule,
     OtpModule,
   ],
   controllers: [AppController],
