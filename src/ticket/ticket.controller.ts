@@ -6,9 +6,11 @@ import { TicketService } from './ticket.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { RolesGuard } from 'src/users/auth/roles.guard';
 import { Role } from 'src/users/dto/role.enum';
+import { ApiResponseTags } from 'src/utils/decorators/api-response-tags-decorator';
 
 @Controller('ticket')
 @ApiTags('Ticket Module')
+@ApiResponseTags()
 export class TicketController {
   constructor(private readonly ticketService: TicketService) {}
 

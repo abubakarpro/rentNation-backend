@@ -6,9 +6,11 @@ import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { RolesGuard } from 'src/users/auth/roles.guard';
 import { Role } from 'src/users/dto/role.enum';
+import { ApiResponseTags } from 'src/utils/decorators/api-response-tags-decorator';
 
 @Controller('category')
 @ApiTags('Category Module')
+@ApiResponseTags()
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 

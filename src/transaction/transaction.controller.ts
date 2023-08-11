@@ -6,9 +6,11 @@ import { TransactionService } from './transaction.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { RolesGuard } from '../users/auth/roles.guard';
 import { Role } from '../users/dto/role.enum';
+import { ApiResponseTags } from 'src/utils/decorators/api-response-tags-decorator';
 
 @Controller('transaction')
 @ApiTags('Transaction Module')
+@ApiResponseTags()
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 

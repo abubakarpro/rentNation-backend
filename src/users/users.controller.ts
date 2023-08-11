@@ -12,9 +12,11 @@ import { OAuthUserDTO } from './dto/OAuthUserDTO.dto';
 import { RolesGuard } from '../users/auth/roles.guard';
 import { Role } from '../users/dto/role.enum';
 import { CreateUserAndProfileDTO } from './dto/update-user-profile.dto';
+import { ApiResponseTags } from 'src/utils/decorators/api-response-tags-decorator';
 
 @Controller('users')
 @ApiTags('USER Module')
+@ApiResponseTags()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 

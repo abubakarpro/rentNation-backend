@@ -6,14 +6,21 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderService } from './order.service';
 import { Role } from 'src/users/dto/role.enum';
 import { RolesGuard } from 'src/users/auth/roles.guard';
+import { ApiResponseTags } from 'src/utils/decorators/api-response-tags-decorator';
 
 @Controller('order')
 @ApiTags('Order Module')
+@ApiResponseTags()
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post()
   createOrder(@Body() createOrderDto: CreateOrderDto) {
+    return this.orderService.createOrderAndPayment(createOrderDto);
+  }
+
+  @Post('/3d-secure')
+  createOrder3DSecure(@Body() createOrderDto: CreateOrderDto) {
     return this.orderService.createOrder(createOrderDto);
   }
 

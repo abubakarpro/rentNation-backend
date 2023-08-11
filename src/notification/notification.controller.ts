@@ -6,9 +6,11 @@ import { NotificationService } from './notification.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { RolesGuard } from 'src/users/auth/roles.guard';
 import { Role } from 'src/users/dto/role.enum';
+import { ApiResponseTags } from 'src/utils/decorators/api-response-tags-decorator';
 
 @Controller('notification')
 @ApiTags('Notification Module')
+@ApiResponseTags()
 export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}
 

@@ -19,6 +19,7 @@ import { TransactionModule } from './transaction/transaction.module';
 import { UploadFileModule } from './upload-file/upload-file.module';
 import { OtpModule } from './otp/otp.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { StripeModule } from './payment-gateway/stripe/stripe.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     UploadFileModule,
     CloudinaryModule,
     OtpModule,
+    StripeModule,
   ],
   controllers: [AppController],
   providers: [AppService, ConfigService],

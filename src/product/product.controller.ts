@@ -4,9 +4,11 @@ import { ApiBearerAuth, ApiParam, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductView } from './dto/update-product-view.dto';
+import { ApiResponseTags } from 'src/utils/decorators/api-response-tags-decorator';
 
 @Controller('product')
 @ApiTags('Product Module')
+@ApiResponseTags()
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 

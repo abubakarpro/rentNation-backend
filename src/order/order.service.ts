@@ -4,9 +4,10 @@ import { Order, Prisma } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 
 import { PrismaService } from 'src/prisma/prisma.service';
-import { OrderModuleMessages } from 'src/utils/appMessges';
+import { OrderModuleMessages, StripeMessages } from 'src/utils/appMessges';
 import { ProductService } from '../product/product.service';
 import { TransactionService } from '../transaction/transaction.service';
+import { StripeService } from 'src/payment-gateway/stripe/stripe.service';
 
 @Injectable()
 export class OrderService {
@@ -14,10 +15,11 @@ export class OrderService {
     private prisma: PrismaService,
     private readonly ProductService: ProductService,
     private readonly TransactionService: TransactionService,
+    private readonly StripeService: StripeService,
   ) {}
 
   async createOrder(createOrderDto): Promise<Order> {
-    const { userId, subTotal, totalPrice, productData, status } = createOrderDto;
+    const { userId, subTotal, totalPrice, productData, status, paymentId, paymentStatus } = createOrderDto;
     try {
       if (productData.length === 0) {
         throw new BadRequestException(OrderModuleMessages.BadRequestExceptionProductErrorMessage);
@@ -66,8 +68,8 @@ export class OrderService {
           userId: userId,
           orderId: orderData.id,
           amount: totalPrice,
-          paymentId: uuidv4(),
-          paymentStatus: 'payed',
+          paymentId,
+          paymentStatus,
         };
         await this.TransactionService.createTranscation(createTransactionData);
       }
@@ -76,6 +78,30 @@ export class OrderService {
       if (error.code === 'P2025') {
         throw new BadRequestException(OrderModuleMessages.BadRequestExceptionNotFoundErrorMessage);
       }
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async createOrderAndPayment(data): Promise<any> {
+    try {
+      const { payment_method_id } = data;
+      const token = !payment_method_id && (await this.StripeService.createToken());
+      const paymentMethod = !payment_method_id && (await this.StripeService.createPaymentMethod(token));
+      const paymentContentPayload = {
+        amount: data.totalPrice * 100,
+        currency: 'USD',
+        paymentMethodId: payment_method_id || paymentMethod?.id,
+      };
+      const paymentIntent = await this.StripeService.createPaymentIntent(paymentContentPayload);
+      if (paymentIntent) {
+        Object.assign(data, { paymentId: paymentIntent.id, paymentStatus: paymentIntent.status });
+        if (paymentIntent.status === StripeMessages.requiresAction) {
+          return paymentIntent;
+        } else {
+          return await this.createOrder(data);
+        }
+      }
+    } catch (error) {
       throw new BadRequestException(error.message);
     }
   }

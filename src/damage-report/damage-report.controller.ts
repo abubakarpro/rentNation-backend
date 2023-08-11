@@ -6,9 +6,11 @@ import { DamageReportService } from './damage-report.service';
 import { CreateDamageReportDto } from './dto/create-damageReport.dto';
 import { RolesGuard } from '../users/auth/roles.guard';
 import { Role } from '../users/dto/role.enum';
+import { ApiResponseTags } from 'src/utils/decorators/api-response-tags-decorator';
 
 @Controller('damageReport')
-@ApiTags('Category Module')
+@ApiTags('Damage Report Module')
+@ApiResponseTags()
 export class DamageReportController {
   constructor(private readonly damageReportService: DamageReportService) {}
 

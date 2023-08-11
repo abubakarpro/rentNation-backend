@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateOrderDto {
@@ -23,4 +23,8 @@ export class CreateOrderDto {
   @ApiProperty()
   @IsNotEmpty()
   totalPrice: number;
+
+  @ApiProperty()
+  @IsOptional()
+  payment_method_id: string;
 }
